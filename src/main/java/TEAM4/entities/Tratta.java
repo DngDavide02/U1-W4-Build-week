@@ -5,11 +5,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
 public class Tratta {
     @Id
+    @GeneratedValue
+    private UUID id;
     @ManyToMany
     @JoinTable(
-            name = "tratta",
+            name = "tratta_mezzi",
             joinColumns = @JoinColumn(name = "trattaId"),
             inverseJoinColumns = @JoinColumn(name = "mezziId")
     )

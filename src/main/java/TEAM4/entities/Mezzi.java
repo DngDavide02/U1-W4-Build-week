@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -11,8 +12,9 @@ public class Mezzi {
 
     @Id
     @GeneratedValue
-    @ManyToMany(mappedBy = "tratta")
     private UUID id;
+    @ManyToMany(mappedBy = "mezzi")
+    private List<Tratta> tratta;
     private Integer capienza;
     private TipoMezzo tipoMezzo;
 

@@ -4,6 +4,18 @@
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
              http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
     <persistence-unit name="BWT4">
+        <class>TEAM4.entities.Abbonamenti</class>
+        <class>TEAM4.entities.Atac</class>
+        <class>TEAM4.entities.Biglietti</class>
+        <class>TEAM4.entities.Distributori</class>
+        <class>TEAM4.entities.Emittenti</class>
+        <class>TEAM4.entities.Manutenzione</class>
+        <class>TEAM4.entities.Mezzi</class>
+        <class>TEAM4.entities.Rivenditori</class>
+        <class>TEAM4.entities.Tessera</class>
+        <class>TEAM4.entities.Tratta</class>
+        <class>TEAM4.entities.TipoMezzo</class>
+        <class>TEAM4.entities.TipoAbbonamento</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/BWT4"/>
             <property name="javax.persistence.jdbc.user" value="postgres"/>
