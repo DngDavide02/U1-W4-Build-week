@@ -9,6 +9,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.time.LocalDate;
 import java.util.Random;
+import java.util.UUID;
 
 public class Application {
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("BWT4");
@@ -30,11 +31,17 @@ public class Application {
         Tessera tessera1 = new Tessera(faker.name().firstName().toString(), faker.name().lastName().toString(), LocalDate.of(1999, 8, 9));
         Abbonamenti abbonamento1 = new Abbonamenti(tessera1, TipoAbbonamento.MENSILE);
 
+
         //-----------------------------------------------save-----------------------------------------------
         //atacDAO.save(biglietto1);
         //atacDAO.save(biglietto2);
         //tesseraDAO.save(tessera1);
         //atacDAO.save(abbonamento1);
+        //mezziDAO.checkBiglietti(biglietto2);
+
+        //TODO SISTEMARE STO CASINO
+        Atac biglietto1inbd = atacDAO.findById(UUID.fromString("e4cb70bf-1ff6-47df-93fb-4930a1b4954b"));
+        mezziDAO.checkBiglietti(biglietto1);
 
     }
 }

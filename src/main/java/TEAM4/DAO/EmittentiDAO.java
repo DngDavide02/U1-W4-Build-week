@@ -5,6 +5,7 @@ import TEAM4.entities.Emittenti;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import java.util.UUID;
 
 public class EmittentiDAO {
     private EntityManager em;
@@ -24,4 +25,23 @@ public class EmittentiDAO {
             System.out.println(e.getMessage());
         }
     }//fine save
+
+    public Emittenti findById( UUID id) {
+        return em.find(Emittenti.class, id);
+    }//end find
+
+    public void findByIdAndDelete(long id) {
+        try {
+            EntityTransaction t = em.getTransaction();
+            t.begin();
+            Emittenti found = em.find(Emittenti.class, id);
+            if (found != null) {
+                em.remove(found);
+                t.commit();
+                System.out.println("Emittente cancellato");
+            } else System.out.println("Emittente non trovato");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }//end delete
 }
