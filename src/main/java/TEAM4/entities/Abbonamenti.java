@@ -14,8 +14,7 @@ public class Abbonamenti extends Atac {
 
     private TipoAbbonamento tipo;
 
-    public Abbonamenti(UUID id, LocalDate dataEmissione, LocalDate dataScadenza, Tessera tessera, TipoAbbonamento tipo) {
-        super(id, dataEmissione);
+    public Abbonamenti(LocalDate dataScadenza, Tessera tessera, TipoAbbonamento tipo) {
         this.dataScadenza = dataScadenza;
         this.tessera = tessera;
         this.tipo = tipo;
