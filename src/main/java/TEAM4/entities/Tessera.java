@@ -1,6 +1,7 @@
 package TEAM4.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -8,6 +9,7 @@ import java.util.UUID;
 @Entity
 public class Tessera {
     @Id
+    @GeneratedValue
     private UUID id;
     private LocalDate dataEmissione;
     private LocalDate dataScadenza;
@@ -15,9 +17,9 @@ public class Tessera {
     private String cognome;
     private LocalDate dataDiNascita;
 
-    public Tessera(LocalDate dataEmissione, LocalDate dataScadenza, String nome, String cognome, LocalDate dataDiNascita) {
+    public Tessera(String nome, String cognome, LocalDate dataDiNascita) {
         this.dataEmissione = LocalDate.now();
-        this.dataScadenza = dataScadenza;
+        this.dataScadenza = LocalDate.now().plusYears(1);
         this.nome = nome;
         this.cognome = cognome;
         this.dataDiNascita = dataDiNascita;

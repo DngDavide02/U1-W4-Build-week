@@ -1,9 +1,6 @@
 package TEAM4.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +13,8 @@ public class Mezzi {
     @ManyToMany(mappedBy = "mezzi")
     private List<Tratta> tratta;
     private Integer capienza;
+
+    @Enumerated(EnumType.STRING)
     private TipoMezzo tipoMezzo;
 
     public Mezzi(Integer capienza, TipoMezzo tipoMezzo) {

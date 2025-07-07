@@ -9,7 +9,7 @@ import javax.persistence.EntityTransaction;
 public class TesseraDAO {
     private EntityManager em;
 
-    public void TesseraDAO(EntityManager em){
+    public TesseraDAO(EntityManager em){
         this.em = em;
     }
 

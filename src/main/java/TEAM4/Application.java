@@ -1,10 +1,7 @@
 package TEAM4;
 
 import TEAM4.DAO.*;
-import TEAM4.entities.Abbonamenti;
-import TEAM4.entities.Biglietti;
-import TEAM4.entities.Tessera;
-import TEAM4.entities.Tratta;
+import TEAM4.entities.*;
 import com.github.javafaker.Faker;
 
 import javax.persistence.EntityManager;
@@ -20,20 +17,24 @@ public class Application {
         EntityManager em = emf.createEntityManager();
         Faker faker = new Faker();
         AtacDAO atacDAO = new AtacDAO(em);
-        EmittentiDAO emittentiDAO = new EmittentiDAO();
-        MezziDAO mezziDAO = new MezziDAO();
-        TesseraDAO tesseraDAO = new TesseraDAO();
-        TrattaDAO trattaDAO = new TrattaDAO();
+        EmittentiDAO emittentiDAO = new EmittentiDAO(em);
+        MezziDAO mezziDAO = new MezziDAO(em);
+        TesseraDAO tesseraDAO = new TesseraDAO(em);
+        TrattaDAO trattaDAO = new TrattaDAO(em);
         Random rndm = new Random();
 
 
         //------------------------------------------------add-----------------------------------------------
         Biglietti biglietto1 = new Biglietti();
         Biglietti biglietto2 = new Biglietti(LocalDate.of(2020,03, 22));
+        Tessera tessera1 = new Tessera(faker.name().firstName().toString(), faker.name().lastName().toString(), LocalDate.of(1999, 8, 9));
+        Abbonamenti abbonamento1 = new Abbonamenti(tessera1, TipoAbbonamento.MENSILE);
 
         //-----------------------------------------------save-----------------------------------------------
         //atacDAO.save(biglietto1);
         //atacDAO.save(biglietto2);
+        //tesseraDAO.save(tessera1);
+        //atacDAO.save(abbonamento1);
 
     }
 }

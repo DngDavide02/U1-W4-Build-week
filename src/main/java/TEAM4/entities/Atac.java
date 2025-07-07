@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Atac {
     @Id
     @GeneratedValue

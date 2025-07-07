@@ -9,7 +9,7 @@ import javax.persistence.EntityTransaction;
 public class EmittentiDAO {
     private EntityManager em;
 
-    public void EmittentiDAO(EntityManager em){
+    public EmittentiDAO(EntityManager em){
         this.em = em;
     }
 

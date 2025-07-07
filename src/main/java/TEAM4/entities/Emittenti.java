@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Emittenti {
     @Id
     @GeneratedValue

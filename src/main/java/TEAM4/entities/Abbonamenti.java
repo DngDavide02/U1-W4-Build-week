@@ -1,6 +1,8 @@
 package TEAM4.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -12,10 +14,15 @@ public class Abbonamenti extends Atac {
     @ManyToOne
     private Tessera tessera;
 
+    @Enumerated(EnumType.STRING)
     private TipoAbbonamento tipo;
 
-    public Abbonamenti(LocalDate dataScadenza, Tessera tessera, TipoAbbonamento tipo) {
-        this.dataScadenza = dataScadenza;
+    public Abbonamenti(Tessera tessera, TipoAbbonamento tipo) {
+        if (tipo == TipoAbbonamento.MENSILE){
+            this.dataScadenza = super.dataEmissione.plusMonths(1);
+        } else {
+            this.dataScadenza = super.dataEmissione.plusDays(7);
+        }
         this.tessera = tessera;
         this.tipo = tipo;
     }
