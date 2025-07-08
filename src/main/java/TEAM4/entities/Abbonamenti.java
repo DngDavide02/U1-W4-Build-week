@@ -17,6 +17,9 @@ public class Abbonamenti extends Atac {
     @Enumerated(EnumType.STRING)
     private TipoAbbonamento tipo;
 
+    public  Abbonamenti(){
+    }
+
     public Abbonamenti(Tessera tessera, TipoAbbonamento tipo) {
         if (tipo == TipoAbbonamento.MENSILE){
             this.dataScadenza = super.dataEmissione.plusMonths(1);

@@ -1,8 +1,6 @@
 package TEAM4.DAO;
 
-import TEAM4.entities.Atac;
-import TEAM4.entities.Biglietti;
-import TEAM4.entities.Mezzi;
+import TEAM4.entities.*;
 import org.hibernate.sql.Update;
 
 import javax.persistence.EntityManager;
@@ -52,14 +50,13 @@ public class MezziDAO {
     }//end delete
 
     public List<Biglietti> obTiketList(UUID id){
-        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo = :mezzo", Biglietti.class);
+        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo =: mezzo", Biglietti.class);
         query.setParameter("mezzo", findById(id));
         return query.getResultList();
     }
-    public List<Biglietti> obTiketListDate(UUID id, LocalDate data){
-        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo = :id AND b.dataEmissione = :data", Biglietti.class);
-        query.setParameter("id", findById(id));
-        query.setParameter("data", data);
+    public List<Tratta> getTrattaMezzo(UUID idM) {
+        TypedQuery<Tratta> query = em.createQuery("SELECT t FROM Tratta t WHERE t.mezzo = :tmezzo ", Tratta.class);
+        query.setParameter("mezzo", findById(idM));
         return query.getResultList();
     }
 }
