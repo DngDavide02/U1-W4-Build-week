@@ -6,6 +6,7 @@ import TEAM4.entities.Tessera;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class TesseraDAO {
@@ -45,4 +46,24 @@ public class TesseraDAO {
             System.out.println(e.getMessage());
         }
     }//end delete
+
+    public void rinnovaTessera(Tessera tessera){
+        try {
+            EntityTransaction t = em.getTransaction();
+            t.begin();
+
+            if (tessera != null){
+                tessera.setDataEmissione(LocalDate.now());
+                tessera.setDataScadenza(LocalDate.now().plusYears(1));
+                em.merge(tessera);
+                t.commit();
+                System.out.println("Tessera rinnovata con successo");
+            }else {
+                System.out.println("Tessera non trovata");
+                t.rollback();
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
 }
