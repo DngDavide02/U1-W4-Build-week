@@ -59,4 +59,35 @@ public class MezziDAO {
         query.setParameter("mezzo", findById(idM));
         return query.getResultList();
     }
+
+    public void salvaManutenzione(Manutenzione manutenzione){
+        try {
+            EntityTransaction t = em.getTransaction();
+            t.begin();
+            em.persist(manutenzione);
+            t.commit();
+            System.out.println("Manutenzione salvata");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public boolean isInManutenzione(UUID id){
+        TypedQuery<Manutenzione> query = em.createQuery("SELECT m FROM Manutenzione m WHERE m.mezzo = :mezzo AND m.dataFineM IS NULL OR m.dataFineM > :data", Manutenzione.class);
+        query.setParameter("mezzo", findById(id));
+        query.setParameter("data", LocalDate.now());
+        return !query.getResultList().isEmpty();
+    }
+
+    public void tracciaPeriodiManutenzione(UUID id){
+        TypedQuery<Manutenzione> query = em.createQuery("SELECT m FROM Manutenzione m WHERE m.mezzo = :mezzo AND m.dataFineM IS NOT NULL", Manutenzione.class);
+        query.setParameter("mezzo", findById(id));
+        if (isInManutenzione(id)){
+            System.out.println("il mezzo con id " + id + "è in manutenzione");
+        }else {
+            System.out.println("il mezzo non è in manutenzione");
+        }
+        System.out.println("storico manutenzioni: ");
+        query.getResultList().forEach(manutenzione -> System.out.println("Data inizio manutenzione: " + manutenzione.getDataInizioM() + " Data fine manutenzione " + manutenzione.getDataFineM()));
+    }
 }

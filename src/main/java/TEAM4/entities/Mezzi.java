@@ -19,6 +19,9 @@ public class Mezzi {
     @Enumerated(EnumType.STRING)
     private TipoMezzo tipoMezzo;
 
+    @OneToMany(mappedBy = "mezzo", cascade = CascadeType.ALL)
+    private List<Manutenzione> manutenzioni;
+
     public Mezzi(Integer capienza, TipoMezzo tipoMezzo) {
         this.capienza = capienza;
         this.tipoMezzo = tipoMezzo;
@@ -45,6 +48,8 @@ public class Mezzi {
     public void setCapienza(Integer capienza) {
         this.capienza = capienza;
     }
+
+
 
     @Override
     public String toString() {
