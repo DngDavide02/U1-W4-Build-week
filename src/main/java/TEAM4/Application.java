@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.time.LocalDate;
+import java.util.OptionalDouble;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.UUID;
@@ -70,12 +71,19 @@ public class Application {
                         System.out.print("inserisci password: ");
                         String pw = scanner.nextLine();
                         if (pw.equals(password)){
-                            System.out.println("1- sei bravo");
-                            System.out.println("2- sei cattivo");
+                            System.out.println("1- Aggiungi e modifica");
+                            System.out.println("2- Elimina");
+                            System.out.println("3- Calcola media percorsi");
                             int r = Integer.parseInt(scanner.nextLine());
                             switch (r){
                                 case 1 -> System.out.println("bravo");
                                 case 2 -> System.out.println("cattivo");
+                                case 3 -> {
+                                    System.out.println("Inserisci id");
+                                    String id = scanner.nextLine();
+                                    System.out.println("La media del mezzo con id " + id + " è: " + percorrenzaDAO.mediaPercorrenze(mezziDAO.findById(UUID.fromString(id))).getAsDouble());
+                                }
+
                             }
                             break;
                         }else {
@@ -83,7 +91,6 @@ public class Application {
                         }
                         }
                     }
-
 
                     case 0 -> System.out.println("Arrivederci");
                 }

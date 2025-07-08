@@ -61,4 +61,6 @@ public class PercorrenzaDAO {
         query.setParameter("mezzoPercorrenza", mezzo);
         return query.getResultList().stream().mapToDouble(value -> value.getTempoDiPercorrenzaEffettivo()).average();
     }
+
+
 }
