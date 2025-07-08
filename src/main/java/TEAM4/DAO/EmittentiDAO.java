@@ -75,6 +75,13 @@ public class EmittentiDAO {
             System.out.println(e.getMessage());
         }
     }
+
+    public int bigliettiEmessiInTolale (LocalDate data){
+        TypedQuery<Atac> queryBiglietti= em.createQuery("SELECT a FROM Atac a WHERE a.dataEmissione <= :data", Atac.class);
+        queryBiglietti.setParameter("data", data);
+        return queryBiglietti.getResultList().size();
+    }
+
     public int bigliettiEmessi (LocalDate data, UUID id){
         TypedQuery<Atac> queryBiglietti= em.createQuery("SELECT a FROM Atac a WHERE a.dataEmissione <= :data AND a.emittenti = :id ", Atac.class);
         queryBiglietti.setParameter("data", data);

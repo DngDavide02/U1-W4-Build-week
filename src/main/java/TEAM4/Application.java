@@ -39,7 +39,7 @@ public class Application {
         Tessera tessera2db = tesseraDAO.findById(UUID.fromString("e69a6b7e-0b99-468b-86d7-343bae635b91"));
         Biglietti biglietto2 = new Biglietti(LocalDate.of(2020,3, 22), mezzodb);
         Biglietti biglietto3 = new Biglietti();
-        Biglietti biglietto3db= atacDAO.findBigliettoById(UUID.fromString("78b96435-2fbe-4076-97ec-7035fc290533"));
+        //Biglietti biglietto3db= atacDAO.findBigliettoById(UUID.fromString("78b96435-2fbe-4076-97ec-7035fc290533"));
         Mezzi mezzo1db = mezziDAO.findById(UUID.fromString("c7e071a5-ee6e-4866-8e61-54589b831dbe"));
         Manutenzione manutenzione1 = new Manutenzione(mezzo1db, LocalDate.now().plusDays(5));
 
@@ -47,7 +47,7 @@ public class Application {
 //        atacDAO.save(biglietto1);
 //        atacDAO.save(biglietto2);
         //atacDAO.save(biglietto3);
-        atacDAO.checkBiglietti(biglietto3db.getId(), mezzodb);
+        //atacDAO.checkBiglietti(biglietto3db.getId(), mezzodb);
 
 //        tesseraDAO.save(tessera1);
 //
@@ -72,6 +72,8 @@ public class Application {
         mezziDAO.salvaManutenzione(manutenzione1);
         System.out.println(mezziDAO.isInManutenzione(mezzo1db.getId()));
         mezziDAO.tracciaPeriodiManutenzione(mezzo1db.getId());*/
+
+        System.out.println(emittentiDAO.bigliettiEmessiInTolale(LocalDate.now()));
 
     }
 }
