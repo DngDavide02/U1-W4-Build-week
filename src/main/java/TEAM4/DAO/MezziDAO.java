@@ -57,7 +57,7 @@ public class MezziDAO {
         query.setParameter("mezzo", findById(id));
         return query.getResultList();
     }
-    public Abbonamenti checkSub(UUID id) {
+    public void checkSub(UUID idM, UUID idT) {
         TypedQuery<Abbonamenti> query = em.createQuery("SELECT a FROM Abbonamenti a WHERE a.tessera = :tessera AND a.dataEmissione <= :oggi AND a.dataScadenza > :oggi", Abbonamenti.class);
         query.setParameter("tessera", findById(id));
         query.setParameter("oggi", LocalDate.now());
