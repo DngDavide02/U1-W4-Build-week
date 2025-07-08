@@ -51,6 +51,6 @@ public class Application {
        //Atac biglietto1inbd = atacDAO.findById(UUID.fromString("fa831c99-7e8b-4bd6-86a1-efc66017b7e"));
       // atacDAO.checkBiglietti(UUID.fromString("eb11ab6e-d635-4bc1-9999-815677f41de"),mezzodb);
         //mezziDAO.obTiketList(UUID.fromString("393500cf-22df-429d-ad88-5a9a77610a8d")).forEach(System.out::println);
-
+       // System.out.println(tesseraDAO.checkSub(UUID.fromString("0c3458e0-429f-45ff-ba30-97d5f0464f5f")));
     }
 }

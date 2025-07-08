@@ -1,5 +1,6 @@
 package TEAM4.DAO;
 
+import TEAM4.entities.Abbonamenti;
 import TEAM4.entities.Atac;
 import TEAM4.entities.Biglietti;
 import TEAM4.entities.Mezzi;
@@ -55,5 +56,11 @@ public class MezziDAO {
         TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo =: mezzo", Biglietti.class);
         query.setParameter("mezzo", findById(id));
         return query.getResultList();
+    }
+    public Abbonamenti checkSub(UUID id) {
+        TypedQuery<Abbonamenti> query = em.createQuery("SELECT a FROM Abbonamenti a WHERE a.tessera = :tessera AND a.dataEmissione <= :oggi AND a.dataScadenza > :oggi", Abbonamenti.class);
+        query.setParameter("tessera", findById(id));
+        query.setParameter("oggi", LocalDate.now());
+        return query.getSingleResult();
     }
 }

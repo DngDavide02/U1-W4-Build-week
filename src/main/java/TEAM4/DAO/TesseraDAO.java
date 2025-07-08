@@ -1,11 +1,13 @@
 package TEAM4.DAO;
 
-import TEAM4.entities.Atac;
-import TEAM4.entities.Mezzi;
-import TEAM4.entities.Tessera;
+import TEAM4.entities.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class TesseraDAO {
@@ -45,4 +47,10 @@ public class TesseraDAO {
             System.out.println(e.getMessage());
         }
     }//end delete
+    public Abbonamenti checkSub(UUID id) {
+            TypedQuery<Abbonamenti> query = em.createQuery("SELECT a FROM Abbonamenti a WHERE a.tessera = :tessera AND a.dataEmissione <= :oggi AND a.dataScadenza > :oggi", Abbonamenti.class);
+            query.setParameter("tessera", findById(id));
+            query.setParameter("oggi", LocalDate.now());
+            return query.getSingleResult();
+    }
 }
