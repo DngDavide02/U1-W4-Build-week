@@ -9,6 +9,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.time.LocalDate;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.UUID;
 
 public class Application {
@@ -57,6 +58,38 @@ public class Application {
 //        System.out.println(percorrenzaDAO.mediaPercorrenze(mezzo1dm));
 
         //---------------------------------------------Scanner------------------------------------------
+        Scanner scanner = new Scanner(System.in);
+        String password = "abcde";
+        int risp = 0;
+        do {
+            System.out.println("Benvenuto in Atac, premi 1 se sei un Amministratore o 2 se sei un utente 0 se vuoi uscire");
+            risp = Integer.parseInt(scanner.nextLine());
+                switch (risp) {
+                    case 1 -> {
+                        for (int i = 0; i < 3; i++) {
+                        System.out.print("inserisci password: ");
+                        String pw = scanner.nextLine();
+                        if (pw.equals(password)){
+                            System.out.println("1- sei bravo");
+                            System.out.println("2- sei cattivo");
+                            int r = Integer.parseInt(scanner.nextLine());
+                            switch (r){
+                                case 1 -> System.out.println("bravo");
+                                case 2 -> System.out.println("cattivo");
+                            }
+                            break;
+                        }else {
+                            System.out.println("password non corretta");
+                        }
+                        }
+                    }
+
+
+                    case 0 -> System.out.println("Arrivederci");
+                }
+        }while (risp != 0);
+
+
 
     }
 }
