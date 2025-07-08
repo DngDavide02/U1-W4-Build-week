@@ -28,29 +28,37 @@ public class Application {
         //------------------------------------------------add-----------------------------------------------
         Biglietti biglietto1 = new Biglietti();
         Tessera tessera1 = new Tessera(faker.name().firstName().toString(), faker.name().lastName().toString(), LocalDate.of(1999, 8, 9));
+        Tessera tessera2 = new Tessera(faker.name().firstName().toString(), faker.name().lastName().toString(), LocalDate.of(2002, 4, 6));
+        tessera2.setDataScadenza(LocalDate.now().minusDays(5));
         Abbonamenti abbonamento1 = new Abbonamenti(tessera1, TipoAbbonamento.MENSILE);
         Abbonamenti abbonamento2 = new Abbonamenti(tessera1, TipoAbbonamento.SETTIMANALE,LocalDate.of(2021,3, 20));
 
         Mezzi mezzo1 = new Mezzi(50,TipoMezzo.AUTOBUS);
         Mezzi mezzodb = mezziDAO.findById(UUID.fromString("393500cf-22df-429d-ad88-5a9a77610a8d"));
+        Tessera tessera1db = tesseraDAO.findById(UUID.fromString("292b92d8-cc68-4360-bffa-5880756c5d38"));
+        Tessera tessera2db = tesseraDAO.findById(UUID.fromString("e69a6b7e-0b99-468b-86d7-343bae635b91"));
         Biglietti biglietto2 = new Biglietti(LocalDate.of(2020,3, 22), mezzodb);
 
         //-----------------------------------------------save-----------------------------------------------
-       /* atacDAO.save(biglietto1);
+       /*atacDAO.save(biglietto1);
         atacDAO.save(biglietto2);
         tesseraDAO.save(tessera1);
 
         mezziDAO.save(mezzo1);
         DAO.checkBiglietti(biglietto2);
-*/
-        //tesseraDAO.save(tessera1);
-        //atacDAO.save(abbonamento2);
-        //atacDAO.save(biglietto2);
-       // System.out.println(atacDAO.isObliterated(UUID.fromString("3122ee5c-33b7-4479-bb4b-3c3027a89e0c")));
-        //TODO SISTEMARE STO CASINO
-       //Atac biglietto1inbd = atacDAO.findById(UUID.fromString("fa831c99-7e8b-4bd6-86a1-efc66017b7e"));
-      // atacDAO.checkBiglietti(UUID.fromString("eb11ab6e-d635-4bc1-9999-815677f41de"),mezzodb);
-        //mezziDAO.obTiketList(UUID.fromString("393500cf-22df-429d-ad88-5a9a77610a8d")).forEach(System.out::println);
-       // System.out.println(tesseraDAO.checkSub(UUID.fromString("0c3458e0-429f-45ff-ba30-97d5f0464f5f")));
+
+        tesseraDAO.save(tessera1);
+        atacDAO.save(abbonamento2);
+        atacDAO.save(biglietto2);
+        System.out.println(atacDAO.isObliterated(UUID.fromString("3122ee5c-33b7-4479-bb4b-3c3027a89e0c")));
+        Atac biglietto1inbd = atacDAO.findById(UUID.fromString("fa831c99-7e8b-4bd6-86a1-efc66017b7e"));
+        atacDAO.checkBiglietti(UUID.fromString("eb11ab6e-d635-4bc1-9999-815677f41de"),mezzodb);
+        mezziDAO.obTiketList(UUID.fromString("393500cf-22df-429d-ad88-5a9a77610a8d")).forEach(System.out::println);
+        emittentiDAO.emettiBiglietto(mezzodb);
+        emittentiDAO.emettiAbbonamento(tessera1db, TipoAbbonamento.MENSILE);
+        tesseraDAO.save(tessera2);
+        tesseraDAO.rinnovaTessera(tessera2db);*/
+
+
     }
 }
