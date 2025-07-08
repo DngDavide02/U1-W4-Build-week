@@ -1,11 +1,19 @@
 package TEAM4.DAO;
 
+import TEAM4.entities.Abbonamenti;
 import TEAM4.entities.Atac;
+import TEAM4.entities.Biglietti;
+import TEAM4.entities.Mezzi;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.swing.text.html.parser.Entity;
+import java.sql.PreparedStatement;
+import java.time.LocalDate;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class AtacDAO {
     private EntityManager em;
@@ -27,7 +35,16 @@ public class AtacDAO {
     }//fine save
 
     public Atac findById( UUID id) {
-        return em.find(Atac.class, id);
+        Atac found = em.find(Atac.class, id);
+        if (found == null) throw new RuntimeException();
+        return found;
+    }//end find
+
+    public Biglietti findBigliettoById( UUID id) {
+        return em.find(Biglietti.class, id);
+    }//end find
+    public Abbonamenti findAbbonamentoById(UUID id) {
+        return em.find(Abbonamenti.class, id);
     }//end find
 
     public void findByIdAndDelete(long id) {
@@ -44,4 +61,24 @@ public class AtacDAO {
             System.out.println(e.getMessage());
         }
     }//end delete
+
+    public boolean isObliterated (UUID id){
+        return findBigliettoById(id).getDataTimbratura() != null;
+    }
+
+    public void checkBiglietti (UUID idB, Mezzi idM){
+            if (!isObliterated(idB)){
+                EntityTransaction t = em.getTransaction();
+                t.begin();
+                Query query = em.createQuery("UPDATE Biglietti b SET b.dataTimbratura = :data, b.mezzo = :mezzo WHERE b.id = : id");
+                query.setParameter("data", LocalDate.now());
+                query.setParameter("mezzo", idM);
+                query.setParameter("id", idB);
+                int numModificati = query.executeUpdate();
+                t.commit();
+                System.out.println("Il biglietto è stato timbrato");
+            }else {
+                System.out.println("Il biglietto è già stato timbrato il " + findBigliettoById(idB).getDataTimbratura());
+            }
+    }
 }

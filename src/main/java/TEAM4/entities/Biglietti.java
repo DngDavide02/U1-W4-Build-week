@@ -1,15 +1,20 @@
 package TEAM4.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 
 @Entity
 public class Biglietti extends Atac{
     private LocalDate dataTimbratura;
+    @ManyToOne
+    @JoinColumn(name="mezzo_id")
+    private Mezzi mezzo;
 
-    public Biglietti(LocalDate dataTimbratura) {
-        super();
+    public Biglietti(LocalDate dataTimbratura, Mezzi mezzo) {
         this.dataTimbratura = dataTimbratura;
+        this.mezzo = mezzo;
     }
 
     public Biglietti() {}

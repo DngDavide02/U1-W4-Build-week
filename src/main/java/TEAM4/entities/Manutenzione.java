@@ -17,7 +17,12 @@ public class Manutenzione {
     @ManyToOne
     private Mezzi mezzo;
 
-    public Manutenzione(LocalDate dataFineM, Mezzi mezzo) {
+    public Manutenzione( Mezzi mezzo) {
+        this.dataInizioM = LocalDate.now();
+        this.mezzo = mezzo;
+    }
+
+    public Manutenzione( Mezzi mezzo, LocalDate dataFineM) {
         this.dataInizioM = LocalDate.now();
         this.dataFineM = dataFineM;
         this.mezzo = mezzo;

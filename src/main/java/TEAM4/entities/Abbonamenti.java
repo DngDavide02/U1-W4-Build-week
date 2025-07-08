@@ -26,6 +26,16 @@ public class Abbonamenti extends Atac {
         this.tessera = tessera;
         this.tipo = tipo;
     }
+    public Abbonamenti(Tessera tessera, TipoAbbonamento tipo, LocalDate dataEmissione) {
+       super(dataEmissione);
+        if (tipo == TipoAbbonamento.MENSILE){
+            this.dataScadenza = dataEmissione.plusMonths(1);
+        } else {
+            this.dataScadenza = dataEmissione.plusDays(7);
+        }
+        this.tessera = tessera;
+        this.tipo = tipo;
+    }
 
     public LocalDate getDataScadenza() {
         return dataScadenza;

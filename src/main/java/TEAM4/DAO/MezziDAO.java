@@ -10,6 +10,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class MezziDAO {
@@ -50,18 +51,9 @@ public class MezziDAO {
         }
     }//end delete
 
-    public void checkBiglietti (Biglietti biglietto){
-        try {
-            if (biglietto.getDataTimbratura() == null){
-                TypedQuery<Biglietti> query = em.createQuery("UPDATE biglietti SET datatimbratura = :data WHERE id = : id", Biglietti.class);
-                query.setParameter("date", LocalDate.now());
-                query.setParameter("id", biglietto.getId());
-                System.out.println("Il biglietto è stato timbrato");
-            }else {
-                throw new RuntimeException();
-            }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+    public List<Biglietti> obTiketList(UUID id){
+        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo =: mezzo", Biglietti.class);
+        query.setParameter("mezzo", findById(id));
+        return query.getResultList();
     }
 }

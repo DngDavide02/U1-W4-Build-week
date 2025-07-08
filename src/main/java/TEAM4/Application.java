@@ -27,21 +27,30 @@ public class Application {
 
         //------------------------------------------------add-----------------------------------------------
         Biglietti biglietto1 = new Biglietti();
-        Biglietti biglietto2 = new Biglietti(LocalDate.of(2020,03, 22));
         Tessera tessera1 = new Tessera(faker.name().firstName().toString(), faker.name().lastName().toString(), LocalDate.of(1999, 8, 9));
         Abbonamenti abbonamento1 = new Abbonamenti(tessera1, TipoAbbonamento.MENSILE);
+        Abbonamenti abbonamento2 = new Abbonamenti(tessera1, TipoAbbonamento.SETTIMANALE,LocalDate.of(2021,3, 20));
 
+        Mezzi mezzo1 = new Mezzi(50,TipoMezzo.AUTOBUS);
+        Mezzi mezzodb = mezziDAO.findById(UUID.fromString("393500cf-22df-429d-ad88-5a9a77610a8d"));
+        Biglietti biglietto2 = new Biglietti(LocalDate.of(2020,3, 22), mezzodb);
 
         //-----------------------------------------------save-----------------------------------------------
-        //atacDAO.save(biglietto1);
-        //atacDAO.save(biglietto2);
-        //tesseraDAO.save(tessera1);
-        //atacDAO.save(abbonamento1);
-        //mezziDAO.checkBiglietti(biglietto2);
+       /* atacDAO.save(biglietto1);
+        atacDAO.save(biglietto2);
+        tesseraDAO.save(tessera1);
 
+        mezziDAO.save(mezzo1);
+        DAO.checkBiglietti(biglietto2);
+*/
+        //tesseraDAO.save(tessera1);
+        //atacDAO.save(abbonamento2);
+        //atacDAO.save(biglietto2);
+       // System.out.println(atacDAO.isObliterated(UUID.fromString("3122ee5c-33b7-4479-bb4b-3c3027a89e0c")));
         //TODO SISTEMARE STO CASINO
-        Atac biglietto1inbd = atacDAO.findById(UUID.fromString("e4cb70bf-1ff6-47df-93fb-4930a1b4954b"));
-        mezziDAO.checkBiglietti(biglietto1);
+       //Atac biglietto1inbd = atacDAO.findById(UUID.fromString("fa831c99-7e8b-4bd6-86a1-efc66017b7e"));
+      // atacDAO.checkBiglietti(UUID.fromString("eb11ab6e-d635-4bc1-9999-815677f41de"),mezzodb);
+        //mezziDAO.obTiketList(UUID.fromString("393500cf-22df-429d-ad88-5a9a77610a8d")).forEach(System.out::println);
 
     }
 }

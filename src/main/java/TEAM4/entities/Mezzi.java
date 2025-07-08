@@ -12,6 +12,8 @@ public class Mezzi {
     private UUID id;
     @ManyToMany(mappedBy = "mezzi")
     private List<Tratta> tratta;
+    @OneToMany(mappedBy = "mezzo")
+    private  List<Biglietti> biglietti;
     private Integer capienza;
 
     @Enumerated(EnumType.STRING)

@@ -15,6 +15,9 @@ public abstract class Atac {
     public Atac() {
         this.dataEmissione = LocalDate.now();
     }
+    public Atac(LocalDate dataEmissione) {
+        this.dataEmissione = dataEmissione;
+    }
 
     public UUID getId() {
         return id;
