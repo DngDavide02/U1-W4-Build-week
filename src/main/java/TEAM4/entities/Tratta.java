@@ -10,19 +10,13 @@ public class Tratta {
     @Id
     @GeneratedValue
     private UUID id;
-    @ManyToMany
-    @JoinTable(
-            name = "tratta_mezzi",
-            joinColumns = @JoinColumn(name = "trattaId"),
-            inverseJoinColumns = @JoinColumn(name = "mezziId")
-    )
-    private List<Mezzi> mezzi;
+    @OneToMany(mappedBy = "trattaPercorrenza")
+    private List<Percorrenza> percorrenzaTratta;
     private String partenza;
     private String capolinea;
-    private LocalDate tempoPercorrenza;
+    private int tempoPercorrenza;
 
-    public Tratta(List<Mezzi> mezzi, String partenza, String capolinea, LocalDate tempoPercorrenza) {
-        this.mezzi = mezzi;
+    public Tratta(String partenza, String capolinea, int tempoPercorrenza) {
         this.partenza = partenza;
         this.capolinea = capolinea;
         this.tempoPercorrenza = tempoPercorrenza;
@@ -30,12 +24,12 @@ public class Tratta {
 
     public Tratta(){}
 
-    public List<Mezzi> getMezzi() {
-        return mezzi;
+    public List<Percorrenza> getPercorrenza() {
+        return percorrenzaTratta;
     }
 
-    public void setMezzi(List<Mezzi> mezzi) {
-        this.mezzi = mezzi;
+    public void setPercorrenza(List<Percorrenza> percorrenzaTratta) {
+        this.percorrenzaTratta = Tratta.this.percorrenzaTratta;
     }
 
     public String getPartenza() {
@@ -54,18 +48,18 @@ public class Tratta {
         this.capolinea = capolinea;
     }
 
-    public LocalDate getTempoPercorrenza() {
+    public int getTempoPercorrenza() {
         return tempoPercorrenza;
     }
 
-    public void setTempoPercorrenza(LocalDate tempoPercorrenza) {
+    public void setTempoPercorrenza(int tempoPercorrenza) {
         this.tempoPercorrenza = tempoPercorrenza;
     }
 
     @Override
     public String toString() {
         return "Tratta{" +
-                "mezzi=" + mezzi +
+                "percorrenzaTratta=" + percorrenzaTratta +
                 ", partenza='" + partenza + '\'' +
                 ", capolinea='" + capolinea + '\'' +
                 ", tempoPercorrenza=" + tempoPercorrenza +

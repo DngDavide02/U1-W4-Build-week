@@ -10,8 +10,8 @@ public class Mezzi {
     @Id
     @GeneratedValue
     private UUID id;
-    @ManyToMany(mappedBy = "mezzi")
-    private List<Tratta> tratta;
+    @OneToMany(mappedBy = "mezzoPercorrenza")
+    private List<Percorrenza> percorrenzaMezzi;
     @OneToMany(mappedBy = "mezzo")
     private  List<Biglietti> biglietti;
     private Integer capienza;
