@@ -60,11 +60,6 @@ public class MezziDAO {
         query.setParameter("data", data);
         return query.getResultList();
     }
-    public List<Tratta> getTrattaMezzo(UUID idM) {
-        TypedQuery<Tratta> query = em.createQuery("SELECT t FROM Tratta t WHERE t.mezzo = :mezzo ", Tratta.class);
-        query.setParameter("mezzo", findById(idM));
-        return query.getResultList();
-    }
 
     public void salvaManutenzione(Manutenzione manutenzione){
         try {
