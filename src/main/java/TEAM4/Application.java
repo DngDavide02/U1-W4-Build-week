@@ -40,6 +40,12 @@ public class Application {
         Biglietti biglietto2 = new Biglietti(LocalDate.of(2020,3, 22), mezzodb);
         Biglietti biglietto3 = new Biglietti();
         Biglietti biglietto3db= atacDAO.findBigliettoById(UUID.fromString("78b96435-2fbe-4076-97ec-7035fc290533"));
+        Mezzi mezzo1db = mezziDAO.findById(UUID.fromString("c7e071a5-ee6e-4866-8e61-54589b831dbe"));
+        Tessera tessera1db = tesseraDAO.findById(UUID.fromString("292b92d8-cc68-4360-bffa-5880756c5d38"));
+        Tessera tessera2db = tesseraDAO.findById(UUID.fromString("e69a6b7e-0b99-468b-86d7-343bae635b91"));
+        Biglietti biglietto2 = new Biglietti(LocalDate.of(2020,3, 22), mezzo1db);
+
+        Manutenzione manutenzione1 = new Manutenzione(mezzo1db, LocalDate.now().plusDays(5));
 
         //-----------------------------------------------save-----------------------------------------------
 //        atacDAO.save(biglietto1);
@@ -65,8 +71,11 @@ public class Application {
         emittentiDAO.emettiBiglietto(mezzodb);
         emittentiDAO.emettiAbbonamento(tessera1db, TipoAbbonamento.MENSILE);
         tesseraDAO.save(tessera2);
-        tesseraDAO.rinnovaTessera(tessera2db);*/
-
+        tesseraDAO.rinnovaTessera(tessera2db);
+        mezziDAO.save(mezzo1);
+        mezziDAO.salvaManutenzione(manutenzione1);
+        System.out.println(mezziDAO.isInManutenzione(mezzo1db.getId()));
+        mezziDAO.tracciaPeriodiManutenzione(mezzo1db.getId());*/
 
     }
 }
