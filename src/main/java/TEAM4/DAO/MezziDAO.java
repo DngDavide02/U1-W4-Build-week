@@ -54,6 +54,12 @@ public class MezziDAO {
         query.setParameter("mezzo", findById(id));
         return query.getResultList();
     }
+    public List<Biglietti> obTiketListDate(UUID id, LocalDate data){
+        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo = :id AND b.dataEmissione = :data", Biglietti.class);
+        query.setParameter("id", findById(id));
+        query.setParameter("data", data);
+        return query.getResultList();
+    }
     public List<Tratta> getTrattaMezzo(UUID idM) {
         TypedQuery<Tratta> query = em.createQuery("SELECT t FROM Tratta t WHERE t.mezzo = :mezzo ", Tratta.class);
         query.setParameter("mezzo", findById(idM));
