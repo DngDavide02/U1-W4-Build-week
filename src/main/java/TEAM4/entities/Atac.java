@@ -10,6 +10,10 @@ public abstract class Atac {
     @Id
     @GeneratedValue
     protected UUID id;
+    @ManyToOne
+    @JoinColumn(name = "emittenti_id")
+    private Emittenti emittenti;
+
     protected LocalDate dataEmissione;
 
     public Atac() {
@@ -29,6 +33,14 @@ public abstract class Atac {
 
     public void setDataEmissione(LocalDate dataEmissione) {
         this.dataEmissione = dataEmissione;
+    }
+
+    public Emittenti getEmittenti() {
+        return emittenti;
+    }
+
+    public void setEmittenti(Emittenti emittenti) {
+        this.emittenti = emittenti;
     }
 
     @Override

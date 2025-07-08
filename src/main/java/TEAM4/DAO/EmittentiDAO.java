@@ -4,6 +4,7 @@ import TEAM4.entities.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -73,5 +74,11 @@ public class EmittentiDAO {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+    public int bigliettiEmessi (LocalDate data, UUID id){
+        TypedQuery<Atac> queryBiglietti= em.createQuery("SELECT a FROM Atac a WHERE a.dataEmissione <= :data AND a.emittenti = :id ", Atac.class);
+        queryBiglietti.setParameter("data", data);
+        queryBiglietti.setParameter("id", findById(id));
+        return queryBiglietti.getResultList().size();
     }
 }

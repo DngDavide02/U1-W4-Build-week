@@ -32,19 +32,27 @@ public class Application {
         Abbonamenti abbonamento2 = new Abbonamenti(tessera1, TipoAbbonamento.SETTIMANALE,LocalDate.of(2021,3, 20));
 
         Mezzi mezzo1 = new Mezzi(50,TipoMezzo.AUTOBUS);
-        Mezzi mezzodb = mezziDAO.findById(UUID.fromString("393500cf-22df-429d-ad88-5a9a77610a8d"));
+        Mezzi mezzodb = mezziDAO.findById(UUID.fromString("a8b0f22b-e8e4-4713-88bf-062305845e22"));
         Tessera tessera1db = tesseraDAO.findById(UUID.fromString("292b92d8-cc68-4360-bffa-5880756c5d38"));
         Biglietti biglietto2 = new Biglietti(LocalDate.of(2020,3, 22), mezzodb);
+        Biglietti biglietto3 = new Biglietti();
+        Biglietti biglietto3db= atacDAO.findBigliettoById(UUID.fromString("78b96435-2fbe-4076-97ec-7035fc290533"));
 
         //-----------------------------------------------save-----------------------------------------------
-       /*atacDAO.save(biglietto1);
-        atacDAO.save(biglietto2);
-        tesseraDAO.save(tessera1);
+//        atacDAO.save(biglietto1);
+//        atacDAO.save(biglietto2);
+        //atacDAO.save(biglietto3);
+        atacDAO.checkBiglietti(biglietto3db.getId(), mezzodb);
 
-        mezziDAO.save(mezzo1);
-        DAO.checkBiglietti(biglietto2);
+//        tesseraDAO.save(tessera1);
+//
+//        mezziDAO.save(mezzo1);
+//        atacDAO.checkBiglietti(biglietto1.getId(), mezzo1);
+//        atacDAO.checkBiglietti(biglietto2.getId(), mezzo1);
+//        System.out.println(mezziDAO.obTiketListDate(mezzo1.getId(), LocalDate.now()));
+        //DAO.checkBiglietti(biglietto2);
 
-        tesseraDAO.save(tessera1);
+       /*  tesseraDAO.save(tessera1);
         atacDAO.save(abbonamento2);
         atacDAO.save(biglietto2);
         System.out.println(atacDAO.isObliterated(UUID.fromString("3122ee5c-33b7-4479-bb4b-3c3027a89e0c")));

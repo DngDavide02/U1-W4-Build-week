@@ -52,8 +52,14 @@ public class MezziDAO {
     }//end delete
 
     public List<Biglietti> obTiketList(UUID id){
-        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo =: mezzo", Biglietti.class);
+        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo = :mezzo", Biglietti.class);
         query.setParameter("mezzo", findById(id));
+        return query.getResultList();
+    }
+    public List<Biglietti> obTiketListDate(UUID id, LocalDate data){
+        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo = :id AND b.dataEmissione = :data", Biglietti.class);
+        query.setParameter("id", findById(id));
+        query.setParameter("data", data);
         return query.getResultList();
     }
 }

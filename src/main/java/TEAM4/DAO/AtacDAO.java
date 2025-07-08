@@ -41,10 +41,14 @@ public class AtacDAO {
     }//end find
 
     public Biglietti findBigliettoById( UUID id) {
-        return em.find(Biglietti.class, id);
+        Biglietti found = em.find(Biglietti.class, id);
+        if (found == null) throw new RuntimeException();
+        return found;
     }//end find
     public Abbonamenti findAbbonamentoById(UUID id) {
-        return em.find(Abbonamenti.class, id);
+        Abbonamenti found = em.find(Abbonamenti.class, id);
+        if (found == null) throw new RuntimeException();
+        return found;
     }//end find
 
     public void findByIdAndDelete(long id) {
@@ -67,18 +71,18 @@ public class AtacDAO {
     }
 
     public void checkBiglietti (UUID idB, Mezzi idM){
-            if (!isObliterated(idB)){
+            if (!isObliterated(idB) && idM != null){
                 EntityTransaction t = em.getTransaction();
                 t.begin();
-                Query query = em.createQuery("UPDATE Biglietti b SET b.dataTimbratura = :data, b.mezzo = :mezzo WHERE b.id = : id");
+                Query query = em.createQuery("UPDATE Biglietti b SET b.dataTimbratura = :data, b.mezzi = :mezzo WHERE b.id = :id");
                 query.setParameter("data", LocalDate.now());
-                query.setParameter("mezzo", idM);
+                query.setParameter("mezzi", idM);
                 query.setParameter("id", idB);
                 int numModificati = query.executeUpdate();
                 t.commit();
                 System.out.println("Il biglietto è stato timbrato");
             }else {
-                System.out.println("Il biglietto è già stato timbrato il " + findBigliettoById(idB).getDataTimbratura());
+                System.out.println("Il biglietto è già stato timbrato il o il mezzo non esiste " + findBigliettoById(idB).getDataTimbratura());
             }
     }
 }
