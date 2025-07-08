@@ -50,12 +50,12 @@ public class MezziDAO {
     }//end delete
 
     public List<Biglietti> obTiketList(UUID id){
-        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo =: mezzo", Biglietti.class);
+        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo = :mezzo", Biglietti.class);
         query.setParameter("mezzo", findById(id));
         return query.getResultList();
     }
     public List<Tratta> getTrattaMezzo(UUID idM) {
-        TypedQuery<Tratta> query = em.createQuery("SELECT t FROM Tratta t WHERE t.mezzo = :tmezzo ", Tratta.class);
+        TypedQuery<Tratta> query = em.createQuery("SELECT t FROM Tratta t WHERE t.mezzo = :mezzo ", Tratta.class);
         query.setParameter("mezzo", findById(idM));
         return query.getResultList();
     }
