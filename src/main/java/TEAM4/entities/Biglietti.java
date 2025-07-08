@@ -27,6 +27,14 @@ public class Biglietti extends Atac{
         this.dataTimbratura = dataTimbratura;
     }
 
+    public Mezzi getMezzo() {
+        return mezzo;
+    }
+
+    public void setMezzo(Mezzi mezzo) {
+        this.mezzo = mezzo;
+    }
+
     @Override
     public String toString() {
         return "Biglietti{" +
