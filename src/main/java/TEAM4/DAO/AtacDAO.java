@@ -70,19 +70,22 @@ public class AtacDAO {
         return findBigliettoById(id).getDataTimbratura() != null;
     }
 
-    public void checkBiglietti (UUID idB, Mezzi idM){
-            if (!isObliterated(idB) && idM != null){
+    public void checkBiglietti (UUID idB, Mezzi mezzo) {
+        if (mezzo == null) System.out.println("Mezzo inserito non valido");
+        else {
+            if (!isObliterated(idB)) {
                 EntityTransaction t = em.getTransaction();
                 t.begin();
                 Query query = em.createQuery("UPDATE Biglietti b SET b.dataTimbratura = :data, b.mezzi = :mezzo WHERE b.id = :id");
                 query.setParameter("data", LocalDate.now());
-                query.setParameter("mezzi", idM);
+                query.setParameter("mezzi", mezzo);
                 query.setParameter("id", idB);
                 int numModificati = query.executeUpdate();
                 t.commit();
                 System.out.println("Il biglietto è stato timbrato");
-            }else {
-                System.out.println("Il biglietto è già stato timbrato il o il mezzo non esiste " + findBigliettoById(idB).getDataTimbratura());
+            } else {
+                System.out.println("Il biglietto è già stato timbrato " + findBigliettoById(idB).getDataTimbratura());
             }
+        }
     }
 }

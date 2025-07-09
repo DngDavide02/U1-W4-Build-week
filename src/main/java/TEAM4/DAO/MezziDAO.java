@@ -96,4 +96,26 @@ public class MezziDAO {
         TypedQuery<Mezzi> query = em.createQuery("SELECT m FROM Mezzi m", Mezzi.class);
         return query.getResultList().get(query.getResultList().size() -1);
     }
+
+    public void editMezzo(UUID id, int newCapienza){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Mezzi m SET m.capienza = :newCapienza WHERE m.id = :id");
+        query.setParameter("newCapienza", newCapienza);
+        query.setParameter("id", id);
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("La capienza del mezzo è stata aggiornata");
+    }
+
+    public void editMezzo(UUID id, TipoMezzo tipoMezzo){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Mezzi m SET m.tipoMezzo = :tipoMezzo WHERE m.id = :id");
+        query.setParameter("tipoMezzo", tipoMezzo);
+        query.setParameter("id", id);
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("Il tipo del mezzo è stato aggiornato");
+    }
 }
