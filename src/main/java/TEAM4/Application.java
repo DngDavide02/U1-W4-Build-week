@@ -56,8 +56,8 @@ public class Application {
                         if (pw.equals(password)){
                             System.out.println("1- Aggiungi");
                             System.out.println("2- Modifica");
-                            System.out.println("2- Elimina");
-                            System.out.println("3- Calcola media percorsi");
+                            System.out.println("3- Elimina");
+                            System.out.println("4- Calcola media percorsi");
                             System.out.println("0- Uscita");
                             int r = Integer.parseInt(scanner.nextLine());
                             switch (r){
@@ -80,7 +80,7 @@ public class Application {
                                         case 1 -> modificaEmittenti(scanner,emittentiDAO);
                                         case 2 -> modificaMezzi(scanner, mezziDAO);
                                         case 3 -> modificaPercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);
-                                        case 4 -> {}
+                                        case 4 -> modificaTratta(scanner, trattaDAO);
                                         case 0 -> System.out.println("uscita...");
                                         default -> System.out.println("non hai inserito il numero corretto");
                                     }
@@ -383,4 +383,41 @@ public class Application {
         }
     }//fine mod percorrenza
 
+    public static void modificaTratta(Scanner scanner, TrattaDAO trattaDAO){
+        System.out.println("1- modifica punto di partenza");
+        System.out.println("2- modifica capolinea");
+        System.out.println("3- modifica il tempo di percorrenza");
+        System.out.println("4- modifica tutto");
+        System.out.println("0- esci");
+        int modT = Integer.parseInt(scanner.nextLine());
+        System.out.print("inserisci id Tratta: ");
+        String idT = scanner.nextLine();
+        int n = 1;
+        if (modT == 4){
+            modT = 1;
+            n = 3;
+        }
+        for (int i=0; i<n; i++){
+            switch (modT) {
+                case 0 -> System.out.println("uscita...");
+
+                case 1 -> {
+                    System.out.print("inserisci luogo di partenza");
+                    String partenza = scanner.nextLine();
+                    if (!partenza.isEmpty()) trattaDAO.modificaParenza(UUID.fromString(idT), partenza);
+                }
+                case 2 -> {
+                    System.out.print("inserisci capolinea");
+                    String capolinea = scanner.nextLine();
+                    if (!capolinea.isEmpty()) trattaDAO.modificaCapolinea(UUID.fromString(idT), capolinea);
+                }
+                case 3 -> {
+                    System.out.print("inserisci tempo della percorrenza (premi 0 per uscire): ");
+                    int temp = Integer.parseInt(scanner.nextLine());
+                    if (temp != 0) trattaDAO.modificaTempoPercorrenza(UUID.fromString(idT), temp);
+                }
+            }
+            modT++;
+        }
+    }
 }

@@ -7,6 +7,7 @@ import TEAM4.entities.Tratta;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.UUID;
 
@@ -50,5 +51,38 @@ public class TrattaDAO {
     public Tratta lastCreate(){
         TypedQuery<Tratta> query = em.createQuery("SELECT t FROM Tratta t", Tratta.class);
         return query.getResultList().get(query.getResultList().size() -1);
+    }
+
+    public void modificaParenza(UUID id, String partenza){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Tratta p SET p.partenza = :partenza WHERE p.id = :id");
+        query.setParameter("partenza", partenza);
+        query.setParameter("id", id);
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("il punto di partenza è stato aggiornato");
+    }
+
+    public void modificaCapolinea(UUID id, String capolinea){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Tratta p SET p.capolinea = :capolinea WHERE p.id = :id");
+        query.setParameter("capolinea", capolinea);
+        query.setParameter("id", id);
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("il punto di capolinea è stato aggiornato");
+    }
+
+    public void modificaTempoPercorrenza(UUID id, int tempoPercorrenza){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Tratta p SET p.tempoPercorrenza = :tempoPercorrenza WHERE p.id = :id");
+        query.setParameter("tempoPercorrenza", tempoPercorrenza);
+        query.setParameter("id", id);
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("il punto di percorrenza è stato aggiornato");
     }
 }
