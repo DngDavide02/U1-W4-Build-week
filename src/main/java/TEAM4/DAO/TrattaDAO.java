@@ -1,11 +1,13 @@
 package TEAM4.DAO;
 
 import TEAM4.entities.Atac;
+import TEAM4.entities.Mezzi;
 import TEAM4.entities.Tessera;
 import TEAM4.entities.Tratta;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import java.util.UUID;
 
 public class TrattaDAO {
@@ -45,4 +47,8 @@ public class TrattaDAO {
             System.out.println(e.getMessage());
         }
     }//end delete
+    public Tratta lastCreate(){
+        TypedQuery<Tratta> query = em.createQuery("SELECT t FROM Tratta t", Tratta.class);
+        return query.getResultList().get(query.getResultList().size() -1);
+    }
 }

@@ -28,6 +28,7 @@ public class Application {
         PercorrenzaDAO percorrenzaDAO = new PercorrenzaDAO(em);
         Random rndm = new Random();
 
+
         //---------------------------------------creazione tabella -------------------------------------------
 
         //creaTabelle(atacDAO, emittentiDAO, mezziDAO, trattaDAO, tesseraDAO, percorrenzaDAO, faker);
@@ -122,10 +123,10 @@ public class Application {
     }
 
     public static void scelteSwitch(String s){
-        System.out.println("1-"+ s +"emittenti");
-        System.out.println("2-"+ s +"mezzi");
-        System.out.println("3-"+ s +"percorrenze");
-        System.out.println("4-"+ s +"tratta");
+        System.out.println("1-"+ s +" emittenti");
+        System.out.println("2-"+ s +" mezzi");
+        System.out.println("3-"+ s +" percorrenze");
+        System.out.println("4-"+ s +" tratta");
     }
 
     public static void creazioneEmittenti(Scanner scanner, EmittentiDAO emittentiDAO){
@@ -194,7 +195,8 @@ public class Application {
                 tratta = trattaDAO.findById(UUID.fromString(idTratta));
             }
             case 2 -> {
-                creazioneTratta(scanner, trattaDAO);//TODO DA RIVEDERE
+                creazioneTratta(scanner, trattaDAO);
+                tratta = trattaDAO.lastCreate();
             }
         }
         System.out.println("inserisci il tempo effettivo di percorrenza");

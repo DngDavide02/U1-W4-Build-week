@@ -93,7 +93,7 @@ public class MezziDAO {
     }
 
     public Mezzi lastCreate(){
-        TypedQuery<Mezzi> query = em.createQuery("SELECT m FROM Mezzi m ORDER BY m.id DESC", Mezzi.class);
-        return query.setMaxResults(1).getSingleResult();
+        TypedQuery<Mezzi> query = em.createQuery("SELECT m FROM Mezzi m", Mezzi.class);
+        return query.getResultList().get(query.getResultList().size() -1);
     }
 }
