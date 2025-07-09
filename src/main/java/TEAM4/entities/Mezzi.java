@@ -14,7 +14,7 @@ public class Mezzi {
     private List<Percorrenza> percorrenzaMezzi;
     @OneToMany(mappedBy = "mezzo")
     private  List<Biglietti> biglietti;
-    private Integer capienza;
+    private int capienza;
 
     @Enumerated(EnumType.STRING)
     private TipoMezzo tipoMezzo;
@@ -22,9 +22,13 @@ public class Mezzi {
     @OneToMany(mappedBy = "mezzo", cascade = CascadeType.ALL)
     private List<Manutenzione> manutenzioni;
 
-    public Mezzi(Integer capienza, TipoMezzo tipoMezzo) {
-        this.capienza = capienza;
+    public Mezzi(TipoMezzo tipoMezzo) {
         this.tipoMezzo = tipoMezzo;
+        if (tipoMezzo == TipoMezzo.TRAM){
+            this.capienza = 150;
+        }else{
+            this.capienza = 70;
+        }
     }
 
     public Mezzi(){}

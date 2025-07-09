@@ -7,8 +7,7 @@ import java.util.List;
 public class Distributori extends Emittenti{
     private Boolean fuoriServizio;
 
-    public Distributori(List<Atac> listaBiglietti, Boolean fuoriServizio) {
-        super(listaBiglietti);
+    public Distributori(Boolean fuoriServizio) {
         this.fuoriServizio = fuoriServizio;
     }
 

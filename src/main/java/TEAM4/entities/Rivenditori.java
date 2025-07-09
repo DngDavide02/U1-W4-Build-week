@@ -1,34 +1,32 @@
 package TEAM4.entities;
 
 import javax.persistence.Entity;
-import java.time.LocalDate;
 import java.util.List;
 @Entity
 public class Rivenditori extends Emittenti{
-    private LocalDate orarioApertura;
-    private LocalDate orarioChiusura;
+    private int orarioApertura;
+    private int orarioChiusura;
 
-    public Rivenditori(List<Atac> listaBiglietti, LocalDate orarioApertura, LocalDate orarioChiusura) {
-        super(listaBiglietti);
+    public Rivenditori(int orarioApertura, int orarioChiusura) {
         this.orarioApertura = orarioApertura;
         this.orarioChiusura = orarioChiusura;
     }
 
     public Rivenditori(){}
 
-    public LocalDate getOrarioApertura() {
+    public int getOrarioApertura() {
         return orarioApertura;
     }
 
-    public void setOrarioApertura(LocalDate orarioApertura) {
+    public void setOrarioApertura(int orarioApertura) {
         this.orarioApertura = orarioApertura;
     }
 
-    public LocalDate getOrarioChiusura() {
+    public int getOrarioChiusura() {
         return orarioChiusura;
     }
 
-    public void setOrarioChiusura(LocalDate orarioChiusura) {
+    public void setOrarioChiusura(int orarioChiusura) {
         this.orarioChiusura = orarioChiusura;
     }
 
