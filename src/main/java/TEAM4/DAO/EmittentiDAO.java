@@ -46,7 +46,7 @@ public class EmittentiDAO {
         return found;
     }//end find
 
-    public void findByIdAndDelete(long id) {
+    public void findByIdAndDelete(UUID id) {
         try {
             EntityTransaction t = em.getTransaction();
             t.begin();

@@ -34,7 +34,7 @@ public class PercorrenzaDAO {
         return em.find(Percorrenza.class, id);
     }//end find
 
-    public void findByIdAndDelete(long id) {
+    public void findByIdAndDelete(UUID id) {
         try {
             EntityTransaction t = em.getTransaction();
             t.begin();

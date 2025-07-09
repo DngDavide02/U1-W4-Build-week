@@ -34,7 +34,7 @@ public class MezziDAO {
         return em.find(Mezzi.class, id);
     }//end find
 
-    public void findByIdAndDelete(long id) {
+    public void findByIdAndDelete(UUID id) {
         try {
             EntityTransaction t = em.getTransaction();
             t.begin();
