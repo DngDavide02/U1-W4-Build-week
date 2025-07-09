@@ -31,7 +31,7 @@ public class EmittentiDAO {
         return em.find(Emittenti.class, id);
     }//end find
 
-    public void findByIdAndDelete(long id) {
+    public void findByIdAndDelete(UUID id) {
         try {
             EntityTransaction t = em.getTransaction();
             t.begin();
@@ -88,4 +88,6 @@ public class EmittentiDAO {
         queryBiglietti.setParameter("id", findById(id));
         return queryBiglietti.getResultList().size();
     }
+
+
 }

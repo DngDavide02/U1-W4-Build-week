@@ -50,6 +50,7 @@ public class Application {
                             System.out.println("2- Modifica");
                             System.out.println("2- Elimina");
                             System.out.println("3- Calcola media percorsi");
+                            System.out.println("0- Uscita");
                             int r = Integer.parseInt(scanner.nextLine());
                             switch (r){
                                 case 1 -> {
@@ -60,6 +61,8 @@ public class Application {
                                         case 2 -> {creazioneMezzi(scanner, mezziDAO);}
                                         case 3 -> {creazionePercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);}
                                         case 4 -> {creazioneTratta(scanner, trattaDAO);}
+                                        case 0 -> System.out.println("uscita...");
+                                        default -> System.out.println("non hai inserito il numero corretto");
                                     }
                                 }
                                 case 2 -> {
@@ -67,6 +70,25 @@ public class Application {
                                 }
                                 case 3 ->{
                                     scelteSwitch("Elimina");
+                                    int c1 = Integer.parseInt(scanner.nextLine());
+                                    System.out.println("inserisci id: ");
+                                    String ID = scanner.nextLine();
+                                    switch (c1) {
+                                        case 1 -> {
+                                            emittentiDAO.findByIdAndDelete(UUID.fromString(ID));
+                                        }
+                                        case 2 -> {
+                                            mezziDAO.findByIdAndDelete(UUID.fromString(ID));
+                                        }
+                                        case 3 -> {
+                                            percorrenzaDAO.findByIdAndDelete(UUID.fromString(ID));
+                                        }
+                                        case 4 -> {
+                                            trattaDAO.findByIdAndDelete(UUID.fromString(ID));
+                                        }
+                                        case 0 -> System.out.println("uscita...");
+                                        default -> System.out.println("non hai inserito il numero corretto");
+                                    }
                                 }
                                 case 4 -> {
                                     System.out.println("Inserisci id");
@@ -213,5 +235,7 @@ public class Application {
         System.out.print("Inserisci il tempo stimato per la tratta: ");
         int tempoStimato = Integer.parseInt(scanner.nextLine());
         trattaDAO.save(new Tratta(puntoPartenza, capolinea, tempoStimato));
-    }
+    }//fine creazione tratta
+
+    //-------------------------------------------modifica------------------------------------
 }
