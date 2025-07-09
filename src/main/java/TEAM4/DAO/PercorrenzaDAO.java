@@ -6,6 +6,7 @@ import TEAM4.entities.Tratta;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.OptionalDouble;
@@ -62,5 +63,37 @@ public class PercorrenzaDAO {
         return query.getResultList().stream().mapToDouble(value -> value.getTempoDiPercorrenzaEffettivo()).average();
     }
 
+    public void modificaMezzo(UUID id, Mezzi newMezzo){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Percorrenza p SET p.mezzoPercorrenza = :newMezzo WHERE p.id = :id");
+        query.setParameter("newMezzo", newMezzo);
+        query.setParameter("id", id);
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("il mezzo è stato aggiornato");
+    }
+
+    public void modificaTratta(UUID id, Tratta tratta){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Percorrenza p SET p.trattaPercorrenza = :tratta WHERE p.id = :id");
+        query.setParameter("tratta", tratta);
+        query.setParameter("id", id);
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("la tratta è stata aggiornata");
+    }
+
+    public void modificaTempoEffettivo(UUID id, int newTemp){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Percorrenza p SET p.tempoDiPercorrenzaEffettivo = :newTemp WHERE p.id = :id");
+        query.setParameter("newTemp", newTemp);
+        query.setParameter("id", id);
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("il tempo di percorrenza è stato aggiornato");
+    }
 
 }

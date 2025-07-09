@@ -78,11 +78,9 @@ public class Application {
                                     int c1 = Integer.parseInt(scanner.nextLine());
                                     switch (c1){
                                         case 1 -> modificaEmittenti(scanner,emittentiDAO);
-                                        case 2 -> {
-                                            System.out.println("");
-                                        }
-                                        case 3 -> {creazionePercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);}
-                                        case 4 -> {creazioneTratta(scanner, trattaDAO);}
+                                        case 2 -> modificaMezzi(scanner, mezziDAO);
+                                        case 3 -> modificaPercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);
+                                        case 4 -> {}
                                         case 0 -> System.out.println("uscita...");
                                         default -> System.out.println("non hai inserito il numero corretto");
                                     }
@@ -227,7 +225,7 @@ public class Application {
                 mezzo = mezziDAO.findById(UUID.fromString(idMezzo));
             }
             case 2 -> {
-                creazioneMezzi(scanner, mezziDAO);//TODO DA RIVEDERE
+                creazioneMezzi(scanner, mezziDAO);
                 mezzo = mezziDAO.lastCreate();
             }
         }
@@ -321,5 +319,68 @@ public class Application {
             }
         }
     }
-    //-------------------------------------------modifica------------------------------------
+
+    public static void modificaMezzi(Scanner scanner, MezziDAO mezziDAO){
+        System.out.println("1- modifica tipo mezzo");
+        System.out.println("2- modifica capienza");
+        System.out.println("0- esci");
+        int modM = Integer.parseInt(scanner.nextLine());
+        System.out.print("inserisci id del mezzo: ");
+        String id = scanner.nextLine();
+        switch (modM){
+            case 1 -> {
+                if (TipoMezzo.AUTOBUS == mezziDAO.findById(UUID.fromString(id)).getTipoMezzo()) {
+                    mezziDAO.editMezzo(UUID.fromString(id), TipoMezzo.TRAM);
+                } else {
+                    mezziDAO.editMezzo(UUID.fromString(id), TipoMezzo.AUTOBUS);
+                }
+            }
+            case 2 -> {
+                System.out.print("inserisci la nuova capienza del mezzo: ");
+                int newCapienza = Integer.parseInt(scanner.nextLine());
+                mezziDAO.editMezzo(UUID.fromString(id), newCapienza);
+            }
+            case 0 -> System.out.println("uscita...");
+            default -> System.out.println("input sbagliato");
+        }
+    }//modifica mezzo
+
+    public static void modificaPercorrenze(Scanner scanner, PercorrenzaDAO percorrenzaDAO, MezziDAO mezziDAO, TrattaDAO trattaDAO){
+        System.out.println("1- modifica tipo del mezzo");
+        System.out.println("2- modifica il tratto della percorrenza");
+        System.out.println("3- modifica il tempo di percorrenza effettivo");
+        System.out.println("4- modifica tutto");
+        System.out.println("0- esci");
+        int modP = Integer.parseInt(scanner.nextLine());
+        System.out.print("inserisci id Percorrenza: ");
+        String idP = scanner.nextLine();
+        int n = 1;
+        if (modP == 4){
+            modP = 1;
+            n = 3;
+        }
+        for (int i=0; i<n; i++){
+        switch (modP) {
+            case 0 -> System.out.println("uscita...");
+
+            case 1 -> {
+                System.out.print("inserisci id del mezzo");
+                String idM = scanner.nextLine();
+                if (!idM.isEmpty()) percorrenzaDAO.modificaMezzo(UUID.fromString(idP), mezziDAO.findById(UUID.fromString(idM)));
+            }
+            case 2 -> {
+                System.out.print("inserisci id della tratta");
+                String idT = scanner.nextLine();
+                if (!idT.isEmpty()) percorrenzaDAO.modificaTratta(UUID.fromString(idP), trattaDAO.findById(UUID.fromString(idT)));
+            }
+            case 3 -> {
+                System.out.print("inserisci tempo della percorrenza (premi 0 per uscire): ");
+                int temp = Integer.parseInt(scanner.nextLine());
+                if (temp != 0) percorrenzaDAO.modificaTempoEffettivo(UUID.fromString(idP), temp);
+            }
+        }
+        modP++;
+        }
+    }//fine mod percorrenza
+
 }
