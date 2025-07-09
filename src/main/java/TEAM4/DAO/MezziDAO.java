@@ -91,4 +91,9 @@ public class MezziDAO {
         System.out.println("storico manutenzioni: ");
         query.getResultList().forEach(manutenzione -> System.out.println("Data inizio manutenzione: " + manutenzione.getDataInizioM() + " Data fine manutenzione " + manutenzione.getDataFineM()));
     }
+
+    public Mezzi lastCreate(){
+        TypedQuery<Mezzi> query = em.createQuery("SELECT m FROM Mezzi m ORDER BY m.id DESC", Mezzi.class);
+        return query.setMaxResults(1).getSingleResult();
+    }
 }

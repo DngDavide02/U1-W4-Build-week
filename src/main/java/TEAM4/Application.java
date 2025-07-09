@@ -7,6 +7,7 @@ import com.github.javafaker.Faker;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.OptionalDouble;
 import java.util.Random;
@@ -178,6 +179,7 @@ public class Application {
             }
             case 2 -> {
                 creazioneMezzi(scanner, mezziDAO);//TODO DA RIVEDERE
+                mezzo = mezziDAO.lastCreate();
             }
         }
         System.out.println("vuoi utilizzare una tratta già esistente o crearne una nuova?");
@@ -192,7 +194,7 @@ public class Application {
                 tratta = trattaDAO.findById(UUID.fromString(idTratta));
             }
             case 2 -> {
-                //creazioneTratta();//TODO DA RIVEDERE
+                creazioneTratta(scanner, trattaDAO);//TODO DA RIVEDERE
             }
         }
         System.out.println("inserisci il tempo effettivo di percorrenza");
