@@ -7,6 +7,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
 
 public class EmittentiDAO {
@@ -103,7 +104,7 @@ public class EmittentiDAO {
         queryBiglietti.setParameter("id", findById(id));
         return queryBiglietti.getResultList().size();
     }
-    public void editRivenditoreApertura(UUID id, int orarioApertura ){
+    public void editRivenditoreApertura(UUID id, LocalTime orarioApertura ){
         EntityTransaction t = em.getTransaction();
         t.begin();
         Query query = em.createQuery("UPDATE Rivenditori r SET r.orarioApertura = :orarioApertura WHERE r.id = :id");
@@ -113,7 +114,7 @@ public class EmittentiDAO {
         t.commit();
         System.out.println("L'orario di apertura è stato aggiornato");
     }
-    public void editRivenditoreChiusura(UUID id, int orarioChiusura ){
+    public void editRivenditoreChiusura(UUID id, LocalTime orarioChiusura ){
         EntityTransaction t = em.getTransaction();
         t.begin();
         Query query = em.createQuery("UPDATE Rivenditori r SET r.orarioChiusura = :orarioChiusura WHERE r.id = :id");

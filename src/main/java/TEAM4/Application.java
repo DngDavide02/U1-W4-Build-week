@@ -9,6 +9,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.OptionalDouble;
 import java.util.Random;
 import java.util.Scanner;
@@ -30,9 +32,15 @@ public class Application {
 
 
         //---------------------------------------creazione tabella -------------------------------------------
+        //LocalTime ora = LocalTime.of(23,30);
 
+
+       // Distributori distributori1 = new Distributori(false);
+        //Rivenditori rivenditori1 = new Rivenditori(8,19);
+       // emittentiDAO.save(rivenditori1);
+       // mezziDAO.editMezzo(UUID.fromString("93b373df-4aa1-4ab0-a822-2127c003753e"),TipoMezzo.TRAM);
         //creaTabelle(atacDAO, emittentiDAO, mezziDAO, trattaDAO, tesseraDAO, percorrenzaDAO, faker);
-
+       // emittentiDAO.editRivenditoreChiusura(UUID.fromString("a7ab2710-d818-4f12-9a07-ed7a32654b89"), 10);
         //---------------------------------------------Scanner------------------------------------------
         Scanner scanner = new Scanner(System.in);
         String password = "abcde";
@@ -67,6 +75,18 @@ public class Application {
                                 }
                                 case 2 -> {
                                     scelteSwitch("Modifica");
+                                    int c1 = Integer.parseInt(scanner.nextLine());
+                                    switch (c1){
+                                        case 1 -> modificaEmittenti(scanner,emittentiDAO);
+                                        case 2 -> {
+                                            System.out.println("");
+                                        }
+                                        case 3 -> {creazionePercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);}
+                                        case 4 -> {creazioneTratta(scanner, trattaDAO);}
+                                        case 0 -> System.out.println("uscita...");
+                                        default -> System.out.println("non hai inserito il numero corretto");
+                                    }
+
                                 }
                                 case 3 ->{
                                     scelteSwitch("Elimina");
@@ -158,11 +178,17 @@ public class Application {
         int emit = Integer.parseInt(scanner.nextLine());
         switch (emit){
             case 1 -> {
-                System.out.print("Inserisci orario apertura: ");
-                int orarioApertura = Integer.parseInt(scanner.nextLine());
-                System.out.println("Inserisci orario chiusura: ");
-                int orariooChiusura = Integer.parseInt(scanner.nextLine());
-                emittentiDAO.save(new Rivenditori(orarioApertura, orariooChiusura));
+                System.out.print("Inserisci ora dell'orario di apertura (da 0 a 24): ");
+                int oraA = Integer.parseInt(scanner.nextLine());
+                System.out.print("Inserisci minuti dell'orario di apertura (da 0 a 59): ");
+                int minutiA = Integer.parseInt(scanner.nextLine());
+                LocalTime orarioApertura = LocalTime.of(oraA,minutiA);
+                System.out.println("Inserisci ora dell'orario di chiusura (da 0 a 24): ");
+                int oraC = Integer.parseInt(scanner.nextLine());
+                System.out.println("Inserisci minuti dell'orario di chiusura (da 0 a 59): ");
+                int minutiC = Integer.parseInt(scanner.nextLine());
+                LocalTime orarioChiusura = LocalTime.of(oraC,minutiC);;
+                emittentiDAO.save(new Rivenditori(orarioApertura, orarioChiusura));
             }
             case 2 -> {
                 System.out.println("premi 1 per rendere il distributore in servizio");
@@ -237,5 +263,63 @@ public class Application {
         trattaDAO.save(new Tratta(puntoPartenza, capolinea, tempoStimato));
     }//fine creazione tratta
 
+    public  static void  modificaEmittenti(Scanner scanner, EmittentiDAO emittentiDAO){
+        System.out.println("Quale tipo di emittente vuoi modificare: ");
+        System.out.println("0- Per annullare");
+        System.out.println("1- Rivenditore");
+        System.out.println("2- Distributore");
+        int rT = Integer.parseInt(scanner.nextLine());
+        switch (rT){
+            case 0 -> System.out.println("uscita...");
+            case 1 -> {
+                System.out.println("Cosa vuoi modificare: ");
+                System.out.println("0- Per annullare");
+                System.out.println("1- Orario Apertura");
+                System.out.println("2- Orario Chiusura");
+                System.out.println("3- Entrambi gli orari");
+                int oM = Integer.parseInt(scanner.nextLine());
+                System.out.println("inserisci id: ");
+                String id = scanner.nextLine();
+                int n = 1;
+                if (oM == 3) {
+                    oM=1;
+                    n=2;
+                }
+                for (int i=0; i<n; i++){
+                    switch (oM) {
+                        case 0 -> System.out.println("uscita...");
+                        case 1 -> {
+                            System.out.print("Inserisci ora dell'orario di apertura (da 0 a 23): ");
+                            int oraA = Integer.parseInt(scanner.nextLine());
+                            System.out.print("Inserisci minuti dell'orario di apertura (da 0 a 59): ");
+                            int minutiA = Integer.parseInt(scanner.nextLine());
+                            LocalTime orarioApertura = LocalTime.of(oraA, minutiA);
+                            emittentiDAO.editRivenditoreApertura(UUID.fromString(id), orarioApertura);
+                        }
+                        case 2 -> {
+                            System.out.print("Inserisci ora dell'orario di chiusura (da 0 a 23): ");
+                            int oraC = Integer.parseInt(scanner.nextLine());
+                            System.out.print("Inserisci minuti dell'orario di chiusura (da 0 a 59): ");
+                            int minutiC = Integer.parseInt(scanner.nextLine());
+                            LocalTime orarioChiusura = LocalTime.of(oraC, minutiC);
+                            emittentiDAO.editRivenditoreChiusura(UUID.fromString(id), orarioChiusura);
+                        }
+                        default -> System.out.println("Non hai selezionato un operazione possibile");
+                    }
+                    oM=2;
+                }
+            }
+            case 2-> {
+                System.out.println("inserisci id: ");
+                String id = scanner.nextLine();
+                System.out.println("Il distributore selezionato è " + (emittentiDAO.isOutOfService(UUID.fromString(id))? "fuori servizio" : "in servizio"));
+                System.out.println("Vuoi cambiare lo stato del distributore? (y/n)");
+                String resp = scanner.nextLine();
+                if (resp.equalsIgnoreCase("y")) emittentiDAO.editOutOfService(UUID.fromString(id),!emittentiDAO.isOutOfService(UUID.fromString(id)));
+                else if(resp.equalsIgnoreCase("n")) System.out.println("Grazie arrivederci");
+                else System.out.println("Uomo dai pochi capelli, riferimento casuale, hai sbagliato tasto");
+            }
+        }
+    }
     //-------------------------------------------modifica------------------------------------
 }
