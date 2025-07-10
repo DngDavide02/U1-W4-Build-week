@@ -73,10 +73,10 @@ public class AtacDAO {
             if (!isObliterated(idB)) {
                 EntityTransaction t = em.getTransaction();
                 t.begin();
-                Query query = em.createQuery("UPDATE Biglietti b SET b.dataTimbratura = :data, b.mezzi = :mezzo WHERE b.id = :id");
+                Query query = em.createQuery("UPDATE Biglietti b SET b.dataTimbratura = :data, b.mezzo = :mezzo WHERE b.id = :id");
                 query.setParameter("data", LocalDate.now());
-                query.setParameter("mezzi", mezzo);
-                query.setParameter("id", idB);
+                query.setParameter("mezzo", mezzo);
+                query.setParameter("id", UUID.fromString(idB));
                 int numModificati = query.executeUpdate();
                 t.commit();
                 System.out.println("Il biglietto è stato timbrato");

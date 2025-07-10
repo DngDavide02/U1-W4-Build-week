@@ -125,8 +125,14 @@ public class Application {
                         switch (scelta){
                             case 1 -> acquista(scanner, atacDAO, tesseraDAO);
                             case 2 -> visualizza(scanner, tesseraDAO, atacDAO, trattaDAO);
-                            case 3 -> {}
-                            case 0 -> {}
+                            case 3 -> {
+                                System.out.print("inserisci id del biglietto: ");
+                                String idB = scanner.nextLine();
+                                System.out.print("inserisci id del mezzo: ");
+                                String  idM = scanner.nextLine();
+                                atacDAO.checkBiglietti(idB, mezziDAO.findById(idM));
+                            }
+                            case 0 -> System.out.println("uscita...");
                         }
                     }
 
