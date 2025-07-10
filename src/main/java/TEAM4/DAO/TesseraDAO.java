@@ -24,7 +24,7 @@ public class TesseraDAO {
             t.begin();
             em.persist(tessera);
             t.commit();
-            System.out.println("Tessera salvata");
+            System.out.println("Tessera creata con id " + tessera.getId());
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -49,11 +49,18 @@ public class TesseraDAO {
         }
     }//end delete
 
-    public Abbonamenti checkSub(String id) {
+    public Abbonamenti getSub(String id) {
         TypedQuery<Abbonamenti> query = em.createQuery("SELECT a FROM Abbonamenti a WHERE a.tessera = :tessera AND a.dataEmissione <= :oggi AND a.dataScadenza > :oggi", Abbonamenti.class);
         query.setParameter("tessera", findById(id));
         query.setParameter("oggi", LocalDate.now());
         return query.getSingleResult();
+    }
+
+    public Boolean checkSub(String id) {
+        TypedQuery<Abbonamenti> query = em.createQuery("SELECT a FROM Abbonamenti a WHERE a.tessera = :tessera AND a.dataEmissione <= :oggi AND a.dataScadenza > :oggi", Abbonamenti.class);
+        query.setParameter("tessera", findById(id));
+        query.setParameter("oggi", LocalDate.now());
+        return query.getResultList().isEmpty();
     }
 
     public void rinnovaTessera(Tessera tessera){

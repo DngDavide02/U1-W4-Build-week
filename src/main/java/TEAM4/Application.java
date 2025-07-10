@@ -650,17 +650,24 @@ public class Application {
                         if (risp.equalsIgnoreCase("y")) {
                             System.out.println("Inserisci id della tessera: ");
                             String tessera = scanner.nextLine();
-                            System.out.println("Inserisci tipo abbonamento");
-                            System.out.println("1- mensile");
-                            System.out.println("2- settimanale");
-                            int s = Integer.parseInt(scanner.nextLine());
-                            TipoAbbonamento tipoAbbonamento = null;
-                            switch (s) {
-                                case 1 -> tipoAbbonamento = TipoAbbonamento.MENSILE;
-                                case 2 -> tipoAbbonamento = TipoAbbonamento.SETTIMANALE;
+                            if (!tesseraDAO.checkSub(tessera)){
+                                System.out.println("Abbonamento già presente");
+                            } else {
+                                System.out.println("Inserisci tipo abbonamento");
+                                System.out.println("1- mensile");
+                                System.out.println("2- settimanale");
+                                System.out.println("0- uscita");
+                                int s = Integer.parseInt(scanner.nextLine());
+                                TipoAbbonamento tipoAbbonamento = null;
+                                switch (s) {
+                                    case 0 -> System.out.println("esco...");
+                                    case 1 -> tipoAbbonamento = TipoAbbonamento.MENSILE;
+                                    case 2 -> tipoAbbonamento = TipoAbbonamento.SETTIMANALE;
+                                }
+                                if (s != 0)
+                                    atacDAO.save(new Abbonamenti(tesseraDAO.findById(tessera), tipoAbbonamento));
                             }
-                            atacDAO.save(new Abbonamenti(tesseraDAO.findById(tessera), tipoAbbonamento));
-                        } else {
+                            } else {
                             System.out.print("Per acquistare un abbonamento bisogna possedere una tessera, vuoi acquistarne una? (y/n): ");
                             String s = scanner.nextLine();
                             if (s.equalsIgnoreCase("y")) {
@@ -671,13 +678,15 @@ public class Application {
                     } else {
                         System.out.println("1- mensile");
                         System.out.println("2- settimanale");
+                        System.out.println("0- uscita");
                         int s = Integer.parseInt(scanner.nextLine());
                         TipoAbbonamento tipoAbbonamento = null;
                         switch (s) {
+                            case 0 -> System.out.println("esco...");
                             case 1 -> tipoAbbonamento = TipoAbbonamento.MENSILE;
                             case 2 -> tipoAbbonamento = TipoAbbonamento.SETTIMANALE;
                         }
-                        atacDAO.save(new Abbonamenti(myTessera, tipoAbbonamento));
+                        if(s != 0) atacDAO.save(new Abbonamenti(myTessera, tipoAbbonamento));
                     }
                 }
                 case 3 -> {
