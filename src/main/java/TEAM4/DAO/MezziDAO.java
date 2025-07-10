@@ -132,7 +132,7 @@ public class MezziDAO {
         System.out.println("Il tipo del mezzo è stato aggiornato");
     }
 
-    public void modificaManutenzioni(String id, LocalDate dataFineM){
+    public void modificaDataFineManutenzioni(String id, LocalDate dataFineM){
         EntityTransaction t = em.getTransaction();
         t.begin();
         Query query = em.createQuery("UPDATE Manutenzione m SET m.dataFineM = :dataFineM WHERE m.id = :id");
@@ -142,4 +142,52 @@ public class MezziDAO {
         t.commit();
         System.out.println("La manutenzione è stata aggiornata");
     }
+
+    public void modificaDataInizioManutenzioni(String id, LocalDate dataInizioM){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Manutenzione m SET m.dataInizioM = :dataInizioM WHERE m.id = :id");
+        query.setParameter("dataInizioM", dataInizioM);
+        query.setParameter("id", UUID.fromString(id));
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("La manutenzione è stata aggiornata");
+    }
+
+    public void modificaCausaleManutenzioni(String id, String causale){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Manutenzione m SET m.causale = :causale WHERE m.id = :id");
+        query.setParameter("causale", causale);
+        query.setParameter("id", UUID.fromString(id));
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("La manutenzione è stata aggiornata");
+    }
+
+    public void modificaMezziManutenzioni(String id, Mezzi mezzo){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Manutenzione m SET m.mezzo = :mezzo WHERE m.id = :id");
+        query.setParameter("mezzo", mezzo);
+        query.setParameter("id", UUID.fromString(id));
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("La manutenzione è stata aggiornata");
+    }
+
+    public void eliminaManutenzione(String id) {
+        try {
+            EntityTransaction t = em.getTransaction();
+            t.begin();
+            Manutenzione found = em.find(Manutenzione.class, UUID.fromString(id));
+            if (found != null) {
+                em.remove(found);
+                t.commit();
+                System.out.println("Manutenzione cancellata");
+            } else System.out.println("Manutenzione non trovata");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }//end delete
 }

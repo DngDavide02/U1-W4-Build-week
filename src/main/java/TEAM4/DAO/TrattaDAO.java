@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.List;
 import java.util.UUID;
 
 public class TrattaDAO {
@@ -86,4 +87,13 @@ public class TrattaDAO {
         System.out.println("il punto di percorrenza è stato aggiornato");
     }
 
+    public List<Tratta> trovaTratta(String partenza, String capolinea){
+        TypedQuery<Tratta> query = em.createQuery("SELECT t FROM Tratta t WHERE t.partenza = :partenza AND t.capolinea = :capolinea", Tratta.class);
+        query.setParameter("partenza", partenza);
+        query.setParameter("capolinea", capolinea);
+        if(query.getResultList().isEmpty()){
+            System.out.println("Tratte non trovate");
+        }
+        return query.getResultList();
+    }
 }

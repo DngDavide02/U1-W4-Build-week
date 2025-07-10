@@ -14,18 +14,21 @@ public class Manutenzione {
     private UUID id;
     private LocalDate dataInizioM;
     private LocalDate dataFineM;
+    private String causale;
     @ManyToOne
     private Mezzi mezzo;
 
-    public Manutenzione( Mezzi mezzo) {
+    public Manutenzione( Mezzi mezzo, String causale) {
         this.dataInizioM = LocalDate.now();
         this.mezzo = mezzo;
+        this.causale=causale;
     }
 
-    public Manutenzione( Mezzi mezzo, LocalDate dataInizioM, LocalDate dataFineM) {
+    public Manutenzione( Mezzi mezzo, LocalDate dataInizioM, LocalDate dataFineM , String causale) {
         this.dataInizioM = dataInizioM;
         this.dataFineM = dataFineM;
         this.mezzo = mezzo;
+        this.causale = causale;
     }
 
     public Manutenzione(){}

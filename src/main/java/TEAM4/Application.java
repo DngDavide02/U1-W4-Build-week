@@ -3,6 +3,7 @@ package TEAM4;
 import TEAM4.DAO.*;
 import TEAM4.entities.*;
 import com.github.javafaker.Faker;
+import org.hibernate.sql.HSQLCaseFragment;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -97,7 +98,7 @@ public class Application {
                                             case 2 -> mezziDAO.findByIdAndDelete(ID);
                                             case 3 -> percorrenzaDAO.findByIdAndDelete(ID);
                                             case 4 -> trattaDAO.findByIdAndDelete(ID);
-                                            case 5 ->{}
+                                            case 5 -> mezziDAO.eliminaManutenzione(ID);
                                             default -> System.out.println("non hai inserito il numero corretto");
                                         }
                                     }
@@ -109,6 +110,23 @@ public class Application {
                         }else {
                             System.out.println("password non corretta");
                         }
+                        }
+                    }
+
+                    case 2 ->{
+                        System.out.println();
+                        System.out.println(" ------------------------------ UTENTE -------------------------");
+                        System.out.println("Inserisci operazione da eseguire: ");
+                        System.out.println("1- Acquista");
+                        System.out.println("2- Visualizza");
+                        System.out.println("3- Timbra biglietto");
+                        System.out.println("0- Uscita");
+                        int scelta = Integer.parseInt(scanner.nextLine());
+                        switch (scelta){
+                            case 1 -> acquista(scanner, atacDAO, tesseraDAO);
+                            case 2 -> visualizza(scanner, tesseraDAO, atacDAO, trattaDAO);
+                            case 3 -> {}
+                            case 0 -> {}
                         }
                     }
 
@@ -550,17 +568,129 @@ public class Application {
                 LocalDate dataInizio = localDateCreate(scanner, "");
                 System.out.println("inserisci data fine: ");
                 LocalDate dataFine = localDateCreate(scanner, "");
-                mezziDAO.salvaManutenzione(new Manutenzione(mezziDAO.findById(idM), dataInizio, dataFine));
+                System.out.println("inserisci causale: ");
+                String causale = scanner.nextLine();
+                mezziDAO.salvaManutenzione(new Manutenzione(mezziDAO.findById(idM), dataInizio, dataFine, causale));
             }
             case 2 -> {
-                mezziDAO.salvaManutenzione(new Manutenzione(mezziDAO.findById(idM)));
+                System.out.println("inserisci causale: ");
+                String causale = scanner.nextLine();
+                mezziDAO.salvaManutenzione(new Manutenzione(mezziDAO.findById(idM), causale));
             }
             case 0 -> System.out.println("uscita...");
         }
     }//fine crea man
 
     public static void modificaManutenzioni(Scanner scanner, MezziDAO mezziDAO){
-        
+        System.out.println("Quale parametro della manutenzione vuoi modificare: ");
+        System.out.println("1- modifica data di inizio");
+        System.out.println("2- modifica data di fine");
+        System.out.println("3- modifica mezzo");
+        System.out.println("4- modifica causale");
+        System.out.println("5- modifica tutto");
+        System.out.println("0- esci");
+        int modM = Integer.parseInt(scanner.nextLine());
+        String idM = null;
+        if (modM != 0){
+            System.out.print("Inserisci id Manutenzione: ");
+            idM = scanner.nextLine();
+        }
+        int n = 1;
+        if (modM == 5){
+            modM = 1;
+            n = 4;
+        }
+
+        for (int i=0; i<n; i++){
+            switch (modM) {
+                case 0 -> System.out.println("esco...");
+                case 1 -> {
+                    System.out.print("Inserisci data di inizio manutenzione: ");
+                    mezziDAO.modificaDataInizioManutenzioni(idM ,localDateCreate(scanner, ""));
+
+                }
+                case 2 -> {
+                    System.out.print("Inserisci data fine manutenzione: ");
+                    mezziDAO.modificaDataFineManutenzioni(idM ,localDateCreate(scanner, ""));
+
+                }
+                case 3 -> {
+                    System.out.print("Inserisci il mezzo: ");
+                    String idMezzo = scanner.nextLine();
+                    mezziDAO.modificaMezziManutenzioni(idM, mezziDAO.findById(idMezzo));
+                }
+
+                case 4 -> {
+                    System.out.println("inserisci modifica per la causale (premi 0 per uscire): ");
+                    String causaleMod = scanner.nextLine();
+                    mezziDAO.modificaCausaleManutenzioni(idM, causaleMod);
+                }
+            }
+            modM++;
+        }
+    }
+
+    public static void acquista(Scanner scanner, AtacDAO atacDAO, TesseraDAO tesseraDAO){
+        System.out.println("1- acquista biglietto");
+        System.out.println("2- acquista abbonamento");
+        System.out.println("3- crea tessera");
+        int scel = Integer.parseInt(scanner.nextLine());
+        switch (scel){
+            case 1 -> atacDAO.save(new Biglietti());
+            case 2 -> {
+                System.out.println("inserisci id della tessera: ");
+                String tessera = scanner.nextLine();
+                System.out.println("inserisci tipo abbonamento");
+                System.out.println("1- mensile");
+                System.out.println("2- settimanale");
+                int s = Integer.parseInt(scanner.nextLine());
+                TipoAbbonamento tipoAbbonamento = null;
+                switch (s){
+                    case 1 -> tipoAbbonamento = TipoAbbonamento.MENSILE ;
+                    case 2 -> tipoAbbonamento = TipoAbbonamento.SETTIMANALE;
+                }
+                atacDAO.save(new Abbonamenti(tesseraDAO.findById(tessera), tipoAbbonamento));
+            }
+            case 3 -> {
+                System.out.print("inserisci il tuo nome: ");
+                String nome = scanner.nextLine();
+                System.out.print("inserisci cognome: ");
+                String cognome = scanner.nextLine();
+                tesseraDAO.save(new Tessera(nome, cognome, localDateCreate(scanner, " di nascita")));
+            }
+        }
+    }
+
+    public static void visualizza(Scanner scanner, TesseraDAO tesseraDAO, AtacDAO atacDAO, TrattaDAO trattaDAO){
+        System.out.println("1- visualizza Titoli di viaggio");
+        System.out.println("2- visualizza tratte");
+        int s = Integer.parseInt(scanner.nextLine());
+        switch (s){
+            case 1 -> {
+                System.out.println("1- visualizza tessera");
+                System.out.println("2- visualizza abbonamento");
+                int scel = Integer.parseInt(scanner.nextLine());
+                switch (scel){
+                    case 1 -> {
+                        System.out.println("Inserisci id della tua tessera: ");
+                        String idTessera = scanner.nextLine();
+                        System.out.println(tesseraDAO.findById(idTessera));
+                    }
+                    case 2 -> {
+                        System.out.println("Inserisci id dell'abbonamento");
+                        String idAbbonamento = scanner.nextLine();
+                        System.out.println(atacDAO.findAbbonamentoById(idAbbonamento));
+                    }
+                }
+            }
+            case 2 -> {
+                System.out.print("inserisci partenza: ");
+                String partenza = scanner.nextLine();
+                System.out.print("inserisci arrivo: ");
+                String arrivo = scanner.nextLine();
+                trattaDAO.trovaTratta(partenza, arrivo).forEach(System.out::println);
+            }
+        }
     }
 
     public static LocalDate localDateCreate(Scanner scanner, String str) {
