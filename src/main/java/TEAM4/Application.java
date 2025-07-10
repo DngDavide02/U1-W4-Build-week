@@ -364,8 +364,13 @@ public class Application {
                 System.out.println("Inserisci id: ");
                 String id = scanner.nextLine();
                 System.out.println("Il distributore selezionato è " + (emittentiDAO.isOutOfService(id)? "fuori servizio" : "in servizio"));
-                System.out.println("Vuoi cambiare lo stato del distributore? (y/n)");
-                String resp = scanner.nextLine();
+                String resp = null;
+                while (true) {
+                    System.out.println("Vuoi cambiare lo stato del distributore? (y/n)");
+                    resp = scanner.nextLine();
+                    if (resp.equalsIgnoreCase("y") || resp.equalsIgnoreCase("n")) break;
+                    else System.out.println("non hai inserito la lettera corretta, riprova");
+                }
                 if (resp.equalsIgnoreCase("y")) emittentiDAO.editOutOfService(id,!emittentiDAO.isOutOfService(id));
                 else if(resp.equalsIgnoreCase("n")) System.out.println("Grazie arrivederci");
                 else System.out.println("Esco lo stesso... ma la prossima volta PREMI N !!!!!");
@@ -699,8 +704,13 @@ public class Application {
                 case 1 -> atacDAO.save(new Biglietti());
                 case 2 -> {
                     if (myTessera==null || count == 1) {
-                        System.out.print("Possiedi una tessera? (y/n): ");
-                        String risp = scanner.nextLine();
+                        String risp = null;
+                        while (true){
+                            System.out.print("Possiedi una tessera? (y/n): ");
+                            risp = scanner.nextLine();
+                            if (risp.equalsIgnoreCase("y") || risp.equalsIgnoreCase("n")) break;
+                            else System.out.println("non hai inserito la lettera corretta, riprova");
+                        }
                         if (risp.equalsIgnoreCase("y")) {
                             System.out.println("Inserisci id della tessera: ");
                             String tessera = scanner.nextLine();
@@ -723,8 +733,13 @@ public class Application {
                                     atacDAO.save(new Abbonamenti(tesseraDAO.findById(tessera), tipoAbbonamento));
                             }
                             } else {
-                            System.out.print("Per acquistare un abbonamento bisogna possedere una tessera, vuoi acquistarne una? (y/n): ");
-                            String s = scanner.nextLine();
+                            String s = null;
+                            while (true) {
+                                System.out.print("Per acquistare un abbonamento bisogna possedere una tessera, vuoi acquistarne una? (y/n): ");
+                                s = scanner.nextLine();
+                                if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                                else System.out.println("non hai inserito la lettera corretta, riprova");
+                            }
                             if (s.equalsIgnoreCase("y")) {
                                 scel = 3;
                                 count++;
@@ -753,8 +768,13 @@ public class Application {
                     String cognome = scanner.nextLine();
                     tesseraDAO.save(new Tessera(nome, cognome, localDateCreate(scanner, " di nascita")));
                     if (count>1){
-                        System.out.print("Vuoi acquistare un abbonamento per questa tessera? (y/n): ");
-                        String s = scanner.nextLine();
+                        String s = null;
+                        while (true) {
+                            System.out.print("Vuoi acquistare un abbonamento per questa tessera? (y/n): ");
+                            s = scanner.nextLine();
+                            if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                            else System.out.println("non hai inserito la lettera corretta, riprova");
+                        }
                         if (s.equalsIgnoreCase("y")) {
                             myTessera = tesseraDAO.lastCreate();
                             scel = 2;
