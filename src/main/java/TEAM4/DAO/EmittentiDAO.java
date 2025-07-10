@@ -1,6 +1,7 @@
 package TEAM4.DAO;
 
 import TEAM4.entities.*;
+import TEAM4.exception.notFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -31,19 +32,19 @@ public class EmittentiDAO {
 
     public Emittenti findById(String id) {
         Emittenti found = em.find(Emittenti.class, UUID.fromString(id));
-        if (found == null) throw new RuntimeException();
+        if (found == null) throw new notFoundException();
         return found;
     }//end find
 
     public Distributori findDistributoreById(String id) {
         Distributori found = em.find(Distributori.class, UUID.fromString(id));
-        if (found == null) throw new RuntimeException();
+        if (found == null) throw new notFoundException();
         return found;
     }//end find
 
     public Rivenditori findRivenditoreById(String id) {
         Rivenditori found = em.find(Rivenditori.class, UUID.fromString(id));
-        if (found == null) throw new RuntimeException();
+        if (found == null) throw new notFoundException();
         return found;
     }//end find
 

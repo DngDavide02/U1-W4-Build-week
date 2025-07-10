@@ -1,9 +1,7 @@
 package TEAM4.DAO;
 
-import TEAM4.entities.Atac;
-import TEAM4.entities.Mezzi;
-import TEAM4.entities.Tessera;
 import TEAM4.entities.Tratta;
+import TEAM4.exception.notFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -32,7 +30,9 @@ public class TrattaDAO {
     }//fine save
 
     public Tratta findById(String id) {
-        return em.find(Tratta.class, UUID.fromString(id));
+        Tratta found = em.find(Tratta.class, UUID.fromString(id));
+        if (found == null) throw new notFoundException();
+        return found;
     }//end find
 
     public void findByIdAndDelete(String id) {
@@ -46,7 +46,7 @@ public class TrattaDAO {
                 System.out.println("Tratta cancellata");
             } else System.out.println("Tratta non trovata");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("non trovato");
         }
     }//end delete
     public Tratta lastCreate(){

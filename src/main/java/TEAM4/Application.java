@@ -2,6 +2,7 @@ package TEAM4;
 
 import TEAM4.DAO.*;
 import TEAM4.entities.*;
+import TEAM4.exception.notFoundException;
 import com.github.javafaker.Faker;
 import org.hibernate.sql.HSQLCaseFragment;
 
@@ -168,7 +169,10 @@ public class Application {
             }catch (DateTimeException | IllegalStateException e){
                 System.out.println("hai inserito un dato sbagliato, riprova");
                 System.out.println();
-            }
+            }catch (NullPointerException e){
+                System.out.println("id non valido");
+                System.out.println();
+            }catch (notFoundException e){}
         }
     }//end main
 

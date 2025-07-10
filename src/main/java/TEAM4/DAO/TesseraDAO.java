@@ -1,13 +1,11 @@
 package TEAM4.DAO;
 
 import TEAM4.entities.*;
+import TEAM4.exception.notFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
-import java.time.LocalDate;
-import java.util.List;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -31,7 +29,9 @@ public class TesseraDAO {
     }//fine save
 
     public Tessera findById(String id) {
-        return em.find(Tessera.class, UUID.fromString(id));
+        Tessera found = em.find(Tessera.class, UUID.fromString(id));
+        if (found == null)throw  new notFoundException();
+        return found;
     }//end find
 
     public void findByIdAndDelete(String id) {
