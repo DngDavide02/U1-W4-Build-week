@@ -4,6 +4,7 @@ import TEAM4.entities.Abbonamenti;
 import TEAM4.entities.Atac;
 import TEAM4.entities.Biglietti;
 import TEAM4.entities.Mezzi;
+import TEAM4.exception.notFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -33,18 +34,18 @@ public class AtacDAO {
 
     public Atac findById( String id) {
         Atac found = em.find(Atac.class, UUID.fromString(id));
-        if (found == null) throw new RuntimeException();
+        if (found == null) throw new notFoundException();
         return found;
     }//end find
 
     public Biglietti findBigliettoById( String id) {
         Biglietti found = em.find(Biglietti.class, UUID.fromString(id));
-        if (found == null) throw new RuntimeException();
+        if (found == null) throw new notFoundException();
         return found;
     }//end find
     public Abbonamenti findAbbonamentoById(String id) {
         Abbonamenti found = em.find(Abbonamenti.class, UUID.fromString(id));
-        if (found == null) throw new RuntimeException();
+        if (found == null) throw new notFoundException();
         return found;
     }//end find
 

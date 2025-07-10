@@ -1,8 +1,7 @@
 package TEAM4.DAO;
 
 import TEAM4.entities.*;
-import com.sun.jdi.request.StepRequest;
-import org.hibernate.sql.Update;
+import TEAM4.exception.notFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -32,7 +31,10 @@ public class MezziDAO {
     }//fine save
 
     public Mezzi findById( String id) {
-        return em.find(Mezzi.class, UUID.fromString(id));
+           Mezzi found = em.find(Mezzi.class, UUID.fromString(id));
+           if(found == null) throw new notFoundException();
+           return found;
+
     }//end find
 
     public void findByIdAndDelete(String id) {
@@ -46,7 +48,7 @@ public class MezziDAO {
                 System.out.println("Mezzo cancellato");
             } else System.out.println("Mezzo non trovato");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("non trovato");
         }
     }//end delete
     public List<Biglietti> obTiketList(){

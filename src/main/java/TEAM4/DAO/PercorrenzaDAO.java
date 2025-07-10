@@ -46,7 +46,7 @@ public class PercorrenzaDAO {
                 System.out.println("Percorrenza cancellata");
             } else System.out.println("Percorrenza non trovata");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("non trovato");
         }
     }//end delete
 
