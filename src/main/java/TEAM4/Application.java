@@ -8,6 +8,7 @@ import org.hibernate.sql.HSQLCaseFragment;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Random;
@@ -37,108 +38,138 @@ public class Application {
        // emittentiDAO.editRivenditoreChiusura(UUID.fromString("a7ab2710-d818-4f12-9a07-ed7a32654b89"), 10);
         //---------------------------------------------Scanner------------------------------------------
         Scanner scanner = new Scanner(System.in);
-        String password = "abcde";
-        int risp = 0;
-        do {
-            System.out.println("Benvenuto in Atac, premi 1 se sei un Amministratore o 2 se sei un utente 0 se vuoi uscire");
-            risp = Integer.parseInt(scanner.nextLine());
-                switch (risp) {
-                    case 1 -> {
-                        for (int i = 0; i < 3; i++) {
-                        System.out.print("Inserisci password: ");
-                        String pw = scanner.nextLine();
-                        if (pw.equals(password)){
-                            int r = 0;
+        boolean riprova = true;
+        while (riprova) {
+            try {
+                String password = "abcde";
+                int risp = 0;
+                do {
+                    System.out.println("Benvenuto in Atac, premi 1 se sei un Amministratore o 2 se sei un utente 0 se vuoi uscire");
+                    risp = Integer.parseInt(scanner.nextLine());
+                    switch (risp) {
+                        case 1 -> {
+                            for (int i = 0; i < 3; i++) {
+                                System.out.print("Inserisci password: ");
+                                String pw = scanner.nextLine();
+                                if (pw.equals(password)) {
+                                    int r = 0;
+                                    do {
+                                        System.out.println();
+                                        System.out.println(" ------------------------------ AMMINISTRATORE -------------------------");
+                                        System.out.println("Inserisci operazione da eseguire: ");
+                                        System.out.println("1- Aggiungi");
+                                        System.out.println("2- Modifica");
+                                        System.out.println("3- Elimina");
+                                        System.out.println("4- Statistiche");
+                                        System.out.println("0- Uscita");
+                                        r = Integer.parseInt(scanner.nextLine());
+                                        switch (r) {
+                                            case 1 -> {
+                                                scelteSwitch("Aggiungi");
+                                                int c1 = Integer.parseInt(scanner.nextLine());
+                                                switch (c1) {
+                                                    case 0 -> System.out.println("esco...");
+                                                    case 1 -> creazioneEmittenti(scanner, emittentiDAO);
+                                                    case 2 -> creazioneMezzi(scanner, mezziDAO);
+                                                    case 3 ->
+                                                            creazionePercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);
+                                                    case 4 -> creazioneTratta(scanner, trattaDAO);
+                                                    case 5 -> creaManutenzione(mezziDAO, scanner);
+                                                    default ->
+                                                            System.out.println("non hai inserito il numero corretto");
+                                                }
+                                            }
+                                            case 2 -> {
+                                                scelteSwitch("Modifica");
+                                                int c1 = Integer.parseInt(scanner.nextLine());
+                                                switch (c1) {
+                                                    case 1 -> modificaEmittenti(scanner, emittentiDAO);
+                                                    case 2 -> modificaMezzi(scanner, mezziDAO);
+                                                    case 3 ->
+                                                            modificaPercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);
+                                                    case 4 -> modificaTratta(scanner, trattaDAO);
+                                                    case 5 -> modificaManutenzioni(scanner, mezziDAO);
+                                                    case 0 -> System.out.println("esco...");
+                                                    default ->
+                                                            System.out.println("non hai inserito il numero corretto");
+                                                }
+
+                                            }
+                                            case 3 -> {
+                                                scelteSwitch("Elimina");
+                                                int c1 = Integer.parseInt(scanner.nextLine());
+                                                String ID = null;
+                                                if(c1 != 0 && c1 < 6) {
+                                                    System.out.println("Inserisci id: ");
+                                                    ID = scanner.nextLine();
+                                                }
+                                                switch (c1) {
+                                                    case 0 -> System.out.println("esco...");
+                                                    case 1 -> emittentiDAO.findByIdAndDelete(ID);
+                                                    case 2 -> mezziDAO.findByIdAndDelete(ID);
+                                                    case 3 -> percorrenzaDAO.findByIdAndDelete(ID);
+                                                    case 4 -> trattaDAO.findByIdAndDelete(ID);
+                                                    case 5 -> mezziDAO.eliminaManutenzione(ID);
+                                                    default ->
+                                                            System.out.println("non hai inserito il numero corretto");
+                                                }
+                                            }
+                                            case 4 ->
+                                                    statistiche(scanner, mezziDAO, percorrenzaDAO, emittentiDAO, trattaDAO);
+
+                                        }
+                                    } while (r != 0);
+                                    break;
+                                } else {
+                                    System.out.println("password non corretta");
+                                }
+                            }
+                        }
+
+                        case 2 -> {
+                            int scelta = 0;
                             do {
                                 System.out.println();
-                                System.out.println(" ------------------------------ AMMINISTRATORE -------------------------");
+                                System.out.println(" ------------------------------ UTENTE -------------------------");
                                 System.out.println("Inserisci operazione da eseguire: ");
-                                System.out.println("1- Aggiungi");
-                                System.out.println("2- Modifica");
-                                System.out.println("3- Elimina");
-                                System.out.println("4- Statistiche");
+                                System.out.println("1- Acquista");
+                                System.out.println("2- Visualizza");
+                                System.out.println("3- Timbra biglietto");
                                 System.out.println("0- Uscita");
-                                r = Integer.parseInt(scanner.nextLine());
-                                switch (r) {
-                                    case 1 -> {
-                                        scelteSwitch("Aggiungi");
-                                        int c1 = Integer.parseInt(scanner.nextLine());
-                                        switch (c1) {
-                                            case 0 -> System.out.println("esco...");
-                                            case 1 -> creazioneEmittenti(scanner, emittentiDAO);
-                                            case 2 -> creazioneMezzi(scanner, mezziDAO);
-                                            case 3 -> creazionePercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);
-                                            case 4 -> creazioneTratta(scanner, trattaDAO);
-                                            case 5 -> creaManutenzione(mezziDAO ,scanner);
-                                            default -> System.out.println("non hai inserito il numero corretto");
-                                        }
-                                    }
-                                    case 2 -> {
-                                        scelteSwitch("Modifica");
-                                        int c1 = Integer.parseInt(scanner.nextLine());
-                                        switch (c1) {
-                                            case 1 -> modificaEmittenti(scanner, emittentiDAO);
-                                            case 2 -> modificaMezzi(scanner, mezziDAO);
-                                            case 3 -> modificaPercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);
-                                            case 4 -> modificaTratta(scanner, trattaDAO);
-                                            case 5 -> modificaManutenzioni(scanner, mezziDAO);
-                                            case 0 -> System.out.println("esco...");
-                                            default -> System.out.println("non hai inserito il numero corretto");
-                                        }
-
-                                    }
+                                scelta = Integer.parseInt(scanner.nextLine());
+                                switch (scelta) {
+                                    case 1 -> acquista(scanner, atacDAO, tesseraDAO);
+                                    case 2 -> visualizza(scanner, tesseraDAO, atacDAO, trattaDAO);
                                     case 3 -> {
-                                        scelteSwitch("Elimina");
-                                        int c1 = Integer.parseInt(scanner.nextLine());
-                                        System.out.println("Inserisci id: ");
-                                        String ID = scanner.nextLine();
-                                        switch (c1) {
-                                            case 0 -> System.out.println("esco...");
-                                            case 1 -> emittentiDAO.findByIdAndDelete(ID);
-                                            case 2 -> mezziDAO.findByIdAndDelete(ID);
-                                            case 3 -> percorrenzaDAO.findByIdAndDelete(ID);
-                                            case 4 -> trattaDAO.findByIdAndDelete(ID);
-                                            case 5 -> mezziDAO.eliminaManutenzione(ID);
-                                            default -> System.out.println("non hai inserito il numero corretto");
-                                        }
+                                        System.out.print("inserisci id del biglietto: ");
+                                        String idB = scanner.nextLine();
+                                        System.out.print("inserisci id del mezzo: ");
+                                        String idM = scanner.nextLine();
+                                        atacDAO.checkBiglietti(idB, mezziDAO.findById(idM));
                                     }
-                                    case 4 -> statistiche(scanner,mezziDAO,percorrenzaDAO,emittentiDAO,trattaDAO);
-
+                                    case 0 -> System.out.println("uscita...");
+                                    default -> System.out.println("hai sbagliato numero, riprova");
                                 }
-                            }while (r != 0);
-                                break;
-                        }else {
-                            System.out.println("password non corretta");
+                            }while (scelta != 0);
                         }
+
+                        case 0 -> {
+                            System.out.println("Arrivederci");
+                            riprova=false;
                         }
                     }
-
-                    case 2 ->{
-                        System.out.println();
-                        System.out.println(" ------------------------------ UTENTE -------------------------");
-                        System.out.println("Inserisci operazione da eseguire: ");
-                        System.out.println("1- Acquista");
-                        System.out.println("2- Visualizza");
-                        System.out.println("3- Timbra biglietto");
-                        System.out.println("0- Uscita");
-                        int scelta = Integer.parseInt(scanner.nextLine());
-                        switch (scelta){
-                            case 1 -> acquista(scanner, atacDAO, tesseraDAO);
-                            case 2 -> visualizza(scanner, tesseraDAO, atacDAO, trattaDAO);
-                            case 3 -> {
-                                System.out.print("inserisci id del biglietto: ");
-                                String idB = scanner.nextLine();
-                                System.out.print("inserisci id del mezzo: ");
-                                String  idM = scanner.nextLine();
-                                atacDAO.checkBiglietti(idB, mezziDAO.findById(idM));
-                            }
-                            case 0 -> System.out.println("uscita...");
-                        }
-                    }
-
-                    case 0 -> System.out.println("Arrivederci");
-                }
-        }while (risp != 0);
+                } while (risp != 0);
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            }catch (IllegalArgumentException e){
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            }catch (DateTimeException | IllegalStateException e){
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            }
+        }
     }//end main
 
     //------------------------------------------------------------------------------------------------------------------
@@ -208,7 +239,11 @@ public class Application {
                 System.out.println("premi 1 per rendere il distributore in servizio");
                 System.out.println("premi 2 per rendere il distributore fuori servizio");
                 int inServizio = Integer.parseInt(scanner.nextLine());
-                emittentiDAO.save(new Distributori(inServizio != 1));
+                if (inServizio == 1 || inServizio == 2) {
+                    emittentiDAO.save(new Distributori(inServizio != 1));
+                }else {
+                    System.out.println("hai sbagliato numero, riprova");
+                }
             }
             default -> System.out.println("Inserisci un numero corretto");
         }
@@ -244,6 +279,7 @@ public class Application {
                 creazioneMezzi(scanner, mezziDAO);
                 mezzo = mezziDAO.lastCreate();
             }
+            default -> System.out.println("hai sbagliato numero");
         }
         System.out.println("vuoi utilizzare una tratta già esistente o crearne una nuova?");
         System.out.println("1- esistente");
@@ -260,6 +296,7 @@ public class Application {
                 creazioneTratta(scanner, trattaDAO);
                 tratta = trattaDAO.lastCreate();
             }
+            default -> System.out.println("hai sbagliato numero");
         }
         System.out.println("Inserisci il tempo effettivo di percorrenza");
         int tempoPercorrenza = Integer.parseInt(scanner.nextLine());
@@ -333,6 +370,7 @@ public class Application {
                 else if(resp.equalsIgnoreCase("n")) System.out.println("Grazie arrivederci");
                 else System.out.println("Esco lo stesso... ma la prossima volta PREMI N !!!!!");
             }
+            default -> System.out.println("hai sbagliato numero");
         }
     }
 
@@ -342,8 +380,11 @@ public class Application {
         System.out.println("2- modifica capienza");
         System.out.println("0- esci");
         int modM = Integer.parseInt(scanner.nextLine());
-        System.out.print("Inserisci id del mezzo: ");
-        String id = scanner.nextLine();
+        String id = null;
+        if(modM != 0 && modM < 3) {
+            System.out.print("Inserisci id del mezzo: ");
+            id = scanner.nextLine();
+        }
         switch (modM){
             case 0 -> System.out.println("esco...");
             case 1 -> {
@@ -374,8 +415,11 @@ public class Application {
         System.out.println("4- modifica tutto");
         System.out.println("0- esci");
         int modP = Integer.parseInt(scanner.nextLine());
-        System.out.print("Inserisci id Percorrenza: ");
-        String idP = scanner.nextLine();
+        String idP = null;
+        if(modP != 0 && modP < 5 ) {
+            System.out.print("Inserisci id Percorrenza: ");
+            idP = scanner.nextLine();
+        }
         int n = 1;
         if (modP == 4){
             modP = 1;
@@ -399,6 +443,7 @@ public class Application {
                 int temp = Integer.parseInt(scanner.nextLine());
                 if (temp != 0) percorrenzaDAO.modificaTempoEffettivo(idP, temp);
             }
+            default -> System.out.println("hai sbagliato numero");
         }
         modP++;
         }
@@ -440,6 +485,7 @@ public class Application {
                     int temp = Integer.parseInt(scanner.nextLine());
                     if (temp != 0) trattaDAO.modificaTempoPercorrenza(idT, temp);
                 }
+                default -> System.out.println("hai sbagliato numero");
             }
             modT++;
         }
@@ -494,6 +540,7 @@ public class Application {
                     case 3 -> mezziDAO.obTiketList().forEach(System.out::println);
                     case 4 -> mezziDAO.obTiketList(idM).forEach(System.out::println);
                     case 0 -> System.out.println("uscita...");
+                    default -> System.out.println("hai sbagliato numero");
 
                 }
 
@@ -525,6 +572,7 @@ public class Application {
                     default -> System.out.println("hai sbagliato numero");
                 }
             }
+            default -> System.out.println("hai sbagliato numero");
 
         }
 
@@ -558,6 +606,7 @@ public class Application {
                             default -> "errore";
                         });
             }
+            default -> System.out.println("hai sbagliato numero");
         }
     }
 
@@ -566,8 +615,11 @@ public class Application {
         System.out.println("2- aggiungi nuova manutenzione");
         System.out.println("0- esci");
         int scel = Integer.parseInt(scanner.nextLine());
-        System.out.println("inserisci un id di un veicolo");
-        String idM = scanner.nextLine();
+        String idM = null;
+        if (scel != 0 && scel < 3) {
+            System.out.println("inserisci un id di un veicolo");
+            idM = scanner.nextLine();
+        }
         switch (scel){
             case 1 -> {
                 System.out.print("inserisci data di inizio: ");
@@ -584,6 +636,7 @@ public class Application {
                 mezziDAO.salvaManutenzione(new Manutenzione(mezziDAO.findById(idM), causale));
             }
             case 0 -> System.out.println("uscita...");
+            default -> System.out.println("hai sbagliato numero");
         }
     }//fine crea man
 
@@ -628,6 +681,7 @@ public class Application {
                     String causaleMod = scanner.nextLine();
                     mezziDAO.modificaCausaleManutenzioni(idM, causaleMod);
                 }
+                default -> System.out.println("hai sbagliato numero");
             }
             modM++;
         }
@@ -663,6 +717,7 @@ public class Application {
                                     case 0 -> System.out.println("esco...");
                                     case 1 -> tipoAbbonamento = TipoAbbonamento.MENSILE;
                                     case 2 -> tipoAbbonamento = TipoAbbonamento.SETTIMANALE;
+                                    default -> System.out.println("hai sbagliato tipo");
                                 }
                                 if (s != 0)
                                     atacDAO.save(new Abbonamenti(tesseraDAO.findById(tessera), tipoAbbonamento));
@@ -685,6 +740,7 @@ public class Application {
                             case 0 -> System.out.println("esco...");
                             case 1 -> tipoAbbonamento = TipoAbbonamento.MENSILE;
                             case 2 -> tipoAbbonamento = TipoAbbonamento.SETTIMANALE;
+                            default -> System.out.println("hai sbagliato tipo");
                         }
                         if(s != 0) atacDAO.save(new Abbonamenti(myTessera, tipoAbbonamento));
                     }
@@ -706,6 +762,7 @@ public class Application {
                         } else System.out.println("esco...");
                     }
                 }
+                default -> System.out.println("hai sbagliato numero");
             }
         }
     }
@@ -730,6 +787,7 @@ public class Application {
                         String idAbbonamento = scanner.nextLine();
                         System.out.println(atacDAO.findAbbonamentoById(idAbbonamento));
                     }
+                    default -> System.out.println("hai sbagliato numero");
                 }
             }
             case 2 -> {
@@ -739,6 +797,7 @@ public class Application {
                 String arrivo = scanner.nextLine();
                 trattaDAO.trovaTratta(partenza, arrivo).forEach(System.out::println);
             }
+            default -> System.out.println("hai sbagliato numero");
         }
     }
 

@@ -58,7 +58,7 @@ public class EmittentiDAO {
                 System.out.println("Emittente cancellato");
             } else System.out.println("Emittente non trovato");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("input sbagliato, riprova");
         }
     }//end delete
 
@@ -75,7 +75,7 @@ public class EmittentiDAO {
             t.commit();
             System.out.println("Biglietto emesso con successo");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("input sbagliato, riprova");
         }
     }//fine emetti biglietto
 
@@ -88,7 +88,7 @@ public class EmittentiDAO {
             t.commit();
             System.out.println("Abbonamento emesso con successo");
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("input sbagliato, riprova");
         }
     }
 
