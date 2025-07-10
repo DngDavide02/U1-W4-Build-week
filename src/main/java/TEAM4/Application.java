@@ -613,19 +613,16 @@ public class Application {
                 case 1 -> {
                     System.out.print("Inserisci data di inizio manutenzione: ");
                     mezziDAO.modificaDataInizioManutenzioni(idM ,localDateCreate(scanner, ""));
-
                 }
                 case 2 -> {
                     System.out.print("Inserisci data fine manutenzione: ");
                     mezziDAO.modificaDataFineManutenzioni(idM ,localDateCreate(scanner, ""));
-
                 }
                 case 3 -> {
                     System.out.print("Inserisci il mezzo: ");
                     String idMezzo = scanner.nextLine();
                     mezziDAO.modificaMezziManutenzioni(idM, mezziDAO.findById(idMezzo));
                 }
-
                 case 4 -> {
                     System.out.println("inserisci modifica per la causale (premi 0 per uscire): ");
                     String causaleMod = scanner.nextLine();
@@ -640,29 +637,66 @@ public class Application {
         System.out.println("1- acquista biglietto");
         System.out.println("2- acquista abbonamento");
         System.out.println("3- crea tessera");
+        Tessera myTessera = null;
         int scel = Integer.parseInt(scanner.nextLine());
-        switch (scel){
-            case 1 -> atacDAO.save(new Biglietti());
-            case 2 -> {
-                System.out.println("inserisci id della tessera: ");
-                String tessera = scanner.nextLine();
-                System.out.println("inserisci tipo abbonamento");
-                System.out.println("1- mensile");
-                System.out.println("2- settimanale");
-                int s = Integer.parseInt(scanner.nextLine());
-                TipoAbbonamento tipoAbbonamento = null;
-                switch (s){
-                    case 1 -> tipoAbbonamento = TipoAbbonamento.MENSILE ;
-                    case 2 -> tipoAbbonamento = TipoAbbonamento.SETTIMANALE;
+        int count=1;
+        for (int i=0; i<count; i++) {
+            switch (scel) {
+                case 1 -> atacDAO.save(new Biglietti());
+                case 2 -> {
+                    if (myTessera==null || count == 1) {
+                        System.out.print("Possiedi una tessera? (y/n): ");
+                        String risp = scanner.nextLine();
+                        if (risp.equalsIgnoreCase("y")) {
+                            System.out.println("Inserisci id della tessera: ");
+                            String tessera = scanner.nextLine();
+                            System.out.println("Inserisci tipo abbonamento");
+                            System.out.println("1- mensile");
+                            System.out.println("2- settimanale");
+                            int s = Integer.parseInt(scanner.nextLine());
+                            TipoAbbonamento tipoAbbonamento = null;
+                            switch (s) {
+                                case 1 -> tipoAbbonamento = TipoAbbonamento.MENSILE;
+                                case 2 -> tipoAbbonamento = TipoAbbonamento.SETTIMANALE;
+                            }
+                            atacDAO.save(new Abbonamenti(tesseraDAO.findById(tessera), tipoAbbonamento));
+                        } else {
+                            System.out.print("Per acquistare un abbonamento bisogna possedere una tessera, vuoi acquistarne una? (y/n): ");
+                            String s = scanner.nextLine();
+                            if (s.equalsIgnoreCase("y")) {
+                                scel = 3;
+                                count++;
+                            } else System.out.println("esco...");
+                        }
+                    } else {
+                        System.out.println("1- mensile");
+                        System.out.println("2- settimanale");
+                        int s = Integer.parseInt(scanner.nextLine());
+                        TipoAbbonamento tipoAbbonamento = null;
+                        switch (s) {
+                            case 1 -> tipoAbbonamento = TipoAbbonamento.MENSILE;
+                            case 2 -> tipoAbbonamento = TipoAbbonamento.SETTIMANALE;
+                        }
+                        atacDAO.save(new Abbonamenti(myTessera, tipoAbbonamento));
+                    }
                 }
-                atacDAO.save(new Abbonamenti(tesseraDAO.findById(tessera), tipoAbbonamento));
-            }
-            case 3 -> {
-                System.out.print("inserisci il tuo nome: ");
-                String nome = scanner.nextLine();
-                System.out.print("inserisci cognome: ");
-                String cognome = scanner.nextLine();
-                tesseraDAO.save(new Tessera(nome, cognome, localDateCreate(scanner, " di nascita")));
+                case 3 -> {
+                    System.out.println("------Creazione tessera------");
+                    System.out.print("inserisci il tuo nome: ");
+                    String nome = scanner.nextLine();
+                    System.out.print("inserisci cognome: ");
+                    String cognome = scanner.nextLine();
+                    tesseraDAO.save(new Tessera(nome, cognome, localDateCreate(scanner, " di nascita")));
+                    if (count>1){
+                        System.out.print("Vuoi acquistare un abbonamento per questa tessera? (y/n): ");
+                        String s = scanner.nextLine();
+                        if (s.equalsIgnoreCase("y")) {
+                            myTessera = tesseraDAO.lastCreate();
+                            scel = 2;
+                            count++;
+                        } else System.out.println("esco...");
+                    }
+                }
             }
         }
     }

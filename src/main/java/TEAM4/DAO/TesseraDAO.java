@@ -75,4 +75,9 @@ public class TesseraDAO {
             System.out.println(e.getMessage());
         }
     }
+
+    public Tessera lastCreate(){
+        TypedQuery<Tessera> query = em.createQuery("SELECT t FROM Tessera t", Tessera.class);
+        return query.getResultList().get(query.getResultList().size() -1);
+    }
 }
