@@ -223,15 +223,47 @@ public class Application {
         int emit = Integer.parseInt(scanner.nextLine());
         switch (emit){
             case 1 -> {
-                System.out.print("Inserisci ora dell'orario di apertura (da 0 a 24): ");
-                int oraA = Integer.parseInt(scanner.nextLine());
-                System.out.print("Inserisci minuti dell'orario di apertura (da 0 a 59): ");
-                int minutiA = Integer.parseInt(scanner.nextLine());
+                int n=1;
+                int oraA= -1;
+                for (int i=0; i<n ;i++) {
+                    System.out.print("Inserisci ora dell'orario di apertura (da 0 a 23): ");
+                    oraA = Integer.parseInt(scanner.nextLine());
+                    if (oraA>24 || oraA<0){
+                        System.out.println("Non hai inerito un numero tra 0 e 23, riprova");
+                        n++;
+                    }
+                }
+                n=1;
+                int minutiA= -1;
+                for (int i=0; i<n ;i++) {
+                    System.out.print("Inserisci minuti dell'orario di apertura (da 0 a 59): ");
+                    minutiA = Integer.parseInt(scanner.nextLine());
+                    if (minutiA > 59 || minutiA < 0) {
+                        System.out.println("Non hai inerito un numero tra 0 e 59, riprova");
+                        n++;
+                    }
+                }
                 LocalTime orarioApertura = LocalTime.of(oraA,minutiA);
-                System.out.println("Inserisci ora dell'orario di chiusura (da 0 a 24): ");
-                int oraC = Integer.parseInt(scanner.nextLine());
-                System.out.println("Inserisci minuti dell'orario di chiusura (da 0 a 59): ");
-                int minutiC = Integer.parseInt(scanner.nextLine());
+                n=1;
+                int oraC= -1;
+                for (int i=0; i<n ;i++) {
+                    System.out.print("Inserisci ora dell'orario di apertura (da 0 a 23): ");
+                    oraC = Integer.parseInt(scanner.nextLine());
+                    if (oraC>24 || oraC<0){
+                        System.out.println("Non hai inerito un numero tra 0 e 23, riprova");
+                        n++;
+                    }
+                }
+                n=1;
+                int minutiC= -1;
+                for (int i=0; i<n ;i++) {
+                    System.out.print("Inserisci minuti dell'orario di apertura (da 0 a 59): ");
+                    minutiC = Integer.parseInt(scanner.nextLine());
+                    if (minutiC > 59 || minutiC < 0) {
+                        System.out.println("Non hai inerito un numero tra 0 e 59, riprova");
+                        n++;
+                    }
+                }
                 LocalTime orarioChiusura = LocalTime.of(oraC,minutiC);;
                 emittentiDAO.save(new Rivenditori(orarioApertura, orarioChiusura));
             }
@@ -250,16 +282,21 @@ public class Application {
     }//fine creazione emittenti
 
     public static void creazioneMezzi(Scanner scanner, MezziDAO mezziDAO){
-        System.out.println("Inserisci tipo mezzo: ");
-        System.out.println("1- AUTOBUS");
-        System.out.println("2- TRAM");
-        int mezzo = Integer.parseInt(scanner.nextLine());
-        switch (mezzo){
-            case 1 -> mezziDAO.save(new Mezzi(TipoMezzo.AUTOBUS));
-            case 2 -> mezziDAO.save(new Mezzi(TipoMezzo.TRAM));
-            default -> System.out.println("Inserisci un numero corretto");
-        }
-
+       int mezzo = 0;
+        do {
+           System.out.println("Inserisci tipo mezzo: ");
+           System.out.println("1- AUTOBUS");
+           System.out.println("2- TRAM");
+           System.out.println("0- Uscire");
+           mezzo = Integer.parseInt(scanner.nextLine());
+           switch (mezzo) {
+               case 0 -> System.out.println("esco...");
+               case 1 -> mezziDAO.save(new Mezzi(TipoMezzo.AUTOBUS));
+               case 2 -> mezziDAO.save(new Mezzi(TipoMezzo.TRAM));
+               default -> System.out.println("Inserisci un numero corretto");
+           }
+           
+       }while (mezzo !=0);
     }//fine creazione mezzi
 
     public static void creazionePercorrenze(Scanner scanner, PercorrenzaDAO percorrenzaDAO, MezziDAO mezziDAO , TrattaDAO trattaDAO){

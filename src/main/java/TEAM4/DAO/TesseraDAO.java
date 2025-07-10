@@ -62,6 +62,9 @@ public class TesseraDAO {
         query.setParameter("oggi", LocalDate.now());
         return query.getResultList().isEmpty();
     }
+    public Boolean isExpire(String id){
+        return findById(id).getDataScadenza().isBefore(LocalDate.now());
+    }
 
     public void rinnovaTessera(Tessera tessera){
         try {
