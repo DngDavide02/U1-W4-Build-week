@@ -91,9 +91,11 @@ public class MezziDAO {
         return !query.getResultList().isEmpty();
     }
 
-    public void tracciaPeriodiManutenzione(String id){
-        TypedQuery<Manutenzione> query = em.createQuery("SELECT m FROM Manutenzione m WHERE m.mezzo = :mezzo AND m.dataFineM IS NOT NULL", Manutenzione.class);
+    public void tracciaPeriodiManutenzione(String id,LocalDate dataInizioM, LocalDate dataFineM){
+        TypedQuery<Manutenzione> query = em.createQuery("SELECT m FROM Manutenzione m WHERE m.mezzo = :mezzo AND m.dataFineM IS NOT NULL AND m.dataInizioM >= :dataInizioM AND m.dataFineM <= :dataFineM", Manutenzione.class);
         query.setParameter("mezzo", findById(id));
+        query.setParameter("dataInizioM", dataInizioM);
+        query.setParameter("dataFineM", dataFineM);
         if (isInManutenzione(id)){
             System.out.println("il mezzo con id " + id + "è in manutenzione");
         }else {
@@ -128,5 +130,16 @@ public class MezziDAO {
         int numModificati = query.executeUpdate();
         t.commit();
         System.out.println("Il tipo del mezzo è stato aggiornato");
+    }
+
+    public void modificaManutenzioni(String id, LocalDate dataFineM){
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query query = em.createQuery("UPDATE Manutenzione m SET m.dataFineM = :dataFineM WHERE m.id = :id");
+        query.setParameter("dataFineM", dataFineM);
+        query.setParameter("id", UUID.fromString(id));
+        int numModificati = query.executeUpdate();
+        t.commit();
+        System.out.println("La manutenzione è stata aggiornata");
     }
 }

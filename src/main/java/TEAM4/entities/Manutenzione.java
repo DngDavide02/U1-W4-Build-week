@@ -22,8 +22,8 @@ public class Manutenzione {
         this.mezzo = mezzo;
     }
 
-    public Manutenzione( Mezzi mezzo, LocalDate dataFineM) {
-        this.dataInizioM = LocalDate.now();
+    public Manutenzione( Mezzi mezzo, LocalDate dataInizioM, LocalDate dataFineM) {
+        this.dataInizioM = dataInizioM;
         this.dataFineM = dataFineM;
         this.mezzo = mezzo;
     }

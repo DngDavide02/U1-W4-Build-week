@@ -85,4 +85,5 @@ public class TrattaDAO {
         t.commit();
         System.out.println("il punto di percorrenza è stato aggiornato");
     }
+
 }

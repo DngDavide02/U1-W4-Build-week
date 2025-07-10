@@ -68,6 +68,7 @@ public class Application {
                                             case 2 -> creazioneMezzi(scanner, mezziDAO);
                                             case 3 -> creazionePercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);
                                             case 4 -> creazioneTratta(scanner, trattaDAO);
+                                            case 5 -> creaManutenzione(mezziDAO ,scanner);
                                             default -> System.out.println("non hai inserito il numero corretto");
                                         }
                                     }
@@ -79,6 +80,7 @@ public class Application {
                                             case 2 -> modificaMezzi(scanner, mezziDAO);
                                             case 3 -> modificaPercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);
                                             case 4 -> modificaTratta(scanner, trattaDAO);
+                                            case 5 -> modificaManutenzioni(scanner, mezziDAO);
                                             case 0 -> System.out.println("esco...");
                                             default -> System.out.println("non hai inserito il numero corretto");
                                         }
@@ -95,10 +97,11 @@ public class Application {
                                             case 2 -> mezziDAO.findByIdAndDelete(ID);
                                             case 3 -> percorrenzaDAO.findByIdAndDelete(ID);
                                             case 4 -> trattaDAO.findByIdAndDelete(ID);
+                                            case 5 ->{}
                                             default -> System.out.println("non hai inserito il numero corretto");
                                         }
                                     }
-                                    case 4 -> statistiche(scanner,mezziDAO,percorrenzaDAO,emittentiDAO);
+                                    case 4 -> statistiche(scanner,mezziDAO,percorrenzaDAO,emittentiDAO,trattaDAO);
 
                                 }
                             }while (r != 0);
@@ -154,6 +157,7 @@ public class Application {
         System.out.println("2-"+ s +" mezzi");
         System.out.println("3-"+ s +" percorrenze");
         System.out.println("4-"+ s +" tratta");
+        System.out.println("5-"+ s +" manutenzione");
         System.out.println("0- esci");
     }
 
@@ -416,7 +420,7 @@ public class Application {
             modT++;
         }
     }
-    public static void statistiche (Scanner scanner, MezziDAO mezziDAO, PercorrenzaDAO percorrenzaDAO, EmittentiDAO emittentiDAO ) {
+    public static void statistiche (Scanner scanner, MezziDAO mezziDAO, PercorrenzaDAO percorrenzaDAO, EmittentiDAO emittentiDAO, TrattaDAO trattaDAO ) {
         System.out.println("Quale statistica vuoi visualizzare: ");
         System.out.println("1- statistica biglietti/abbonamenti emessi");
         System.out.println("2- statistica biglietti vidimati");
@@ -441,12 +445,61 @@ public class Application {
                     default -> System.out.println("Input sbagliato");
                 }
             }
-            case 2 ->{}
-            case 3 ->{}
+            case 2 ->{
+                System.out.println("scegli una delle opzioni: ");
+                System.out.println("1- visualizza biglietti per periodo di tempo per tutti i mezzi");
+                System.out.println("2- visualizza biglietti per periodo di tempo con id mezzo");
+                System.out.println("3- visualizza biglietti in totale");
+                System.out.println("4- visualizza tutti i biglietti per un mezzo");
+                System.out.println("0- esci");
+                int scel = Integer.parseInt(scanner.nextLine());
+                String idM = null;
+                LocalDate peridoInizio = null;
+                LocalDate periodoFine = null;
+                if(scel == 2 || scel == 4){
+                    System.out.print("inierisci id del mezzo: ");
+                    idM = scanner.nextLine();
+                }
+                if (scel == 1 || scel == 2){
+                    peridoInizio = localDateCreate(scanner, " della data di inizio controllo");
+                    periodoFine =  localDateCreate(scanner, " della data di fine controllo");
+                }
+                switch (scel){
+                    case 1 -> mezziDAO.obTiketListDate(peridoInizio, periodoFine).forEach(System.out::println);
+                    case 2 -> mezziDAO.obTiketListDate(idM, peridoInizio, periodoFine).forEach(System.out::println);
+                    case 3 -> mezziDAO.obTiketList().forEach(System.out::println);
+                    case 4 -> mezziDAO.obTiketList(idM).forEach(System.out::println);
+                    case 0 -> System.out.println("uscita...");
+
+                }
+
+            }
+            case 3 -> {
+                System.out.print("inserisci id del mezzo: ");
+                String idM = scanner.nextLine();
+                System.out.print("inserisci data inizio controllo: ");
+                LocalDate dataInizio = localDateCreate(scanner, "");
+                System.out.println("inserisci data fine controllo: ");
+                LocalDate dataFine = localDateCreate(scanner, "");
+                mezziDAO.tracciaPeriodiManutenzione(idM, dataInizio, dataFine);
+            }
             case 4 ->{
-                System.out.println("Inserisci id");
-                String id = scanner.nextLine();
-                System.out.println("La media del mezzo con id " + id + " è: " + percorrenzaDAO.mediaPercorrenze(mezziDAO.findById(id)).getAsDouble());
+                System.out.println("1- visualizza media percorrenza mezzo");
+                System.out.println("2- visualizza numero tratte per il mezzo");
+                System.out.println("0- uscita");
+                int scel = Integer.parseInt(scanner.nextLine());
+                System.out.print("Inserisci id mezzo");
+                String idM = scanner.nextLine();
+                switch (scel){
+                    case 1 -> System.out.println("La media del mezzo con id " + idM + " è: " + percorrenzaDAO.mediaPercorrenze(mezziDAO.findById(idM)).getAsDouble());
+                    case 2 -> {
+                        System.out.print("inserisci id della tratta: ");
+                        String idT = scanner.nextLine();
+                        System.out.println("il numero di tratte per il mezzo selezionato è di: " +  percorrenzaDAO.getPercorrenzaMezzo(mezziDAO.findById(idM), trattaDAO.findById(idT)));
+                    }
+                    case 0 -> System.out.println("Uscita...");
+                    default -> System.out.println("hai sbagliato numero");
+                }
             }
 
         }
@@ -482,6 +535,32 @@ public class Application {
                         });
             }
         }
+    }
+
+    public static void creaManutenzione(MezziDAO mezziDAO, Scanner scanner){
+        System.out.println("1- aggiungi manutenzione gia effettuata");
+        System.out.println("2- aggiungi nuova manutenzione");
+        System.out.println("0- esci");
+        int scel = Integer.parseInt(scanner.nextLine());
+        System.out.println("inserisci un id di un veicolo");
+        String idM = scanner.nextLine();
+        switch (scel){
+            case 1 -> {
+                System.out.print("inserisci data di inizio: ");
+                LocalDate dataInizio = localDateCreate(scanner, "");
+                System.out.println("inserisci data fine: ");
+                LocalDate dataFine = localDateCreate(scanner, "");
+                mezziDAO.salvaManutenzione(new Manutenzione(mezziDAO.findById(idM), dataInizio, dataFine));
+            }
+            case 2 -> {
+                mezziDAO.salvaManutenzione(new Manutenzione(mezziDAO.findById(idM)));
+            }
+            case 0 -> System.out.println("uscita...");
+        }
+    }//fine crea man
+
+    public static void modificaManutenzioni(Scanner scanner, MezziDAO mezziDAO){
+        
     }
 
     public static LocalDate localDateCreate(Scanner scanner, String str) {
