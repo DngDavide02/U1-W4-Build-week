@@ -8,12 +8,9 @@ import TEAM4.entities.Mezzi;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.swing.text.html.parser.Entity;
-import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
+
 
 public class AtacDAO {
     private EntityManager em;
@@ -34,28 +31,28 @@ public class AtacDAO {
         }
     }//fine save
 
-    public Atac findById( UUID id) {
-        Atac found = em.find(Atac.class, id);
+    public Atac findById( String id) {
+        Atac found = em.find(Atac.class, UUID.fromString(id));
         if (found == null) throw new RuntimeException();
         return found;
     }//end find
 
-    public Biglietti findBigliettoById( UUID id) {
-        Biglietti found = em.find(Biglietti.class, id);
+    public Biglietti findBigliettoById( String id) {
+        Biglietti found = em.find(Biglietti.class, UUID.fromString(id));
         if (found == null) throw new RuntimeException();
         return found;
     }//end find
-    public Abbonamenti findAbbonamentoById(UUID id) {
-        Abbonamenti found = em.find(Abbonamenti.class, id);
+    public Abbonamenti findAbbonamentoById(String id) {
+        Abbonamenti found = em.find(Abbonamenti.class, UUID.fromString(id));
         if (found == null) throw new RuntimeException();
         return found;
     }//end find
 
-    public void findByIdAndDelete(long id) {
+    public void findByIdAndDelete(String id) {
         try {
             EntityTransaction t = em.getTransaction();
             t.begin();
-            Atac found = em.find(Atac.class, id);
+            Atac found = em.find(Atac.class, UUID.fromString(id));
             if (found != null) {
                 em.remove(found);
                 t.commit();
@@ -66,11 +63,11 @@ public class AtacDAO {
         }
     }//end delete
 
-    public boolean isObliterated (UUID id){
+    public boolean isObliterated (String id){
         return findBigliettoById(id).getDataTimbratura() != null;
     }
 
-    public void checkBiglietti (UUID idB, Mezzi mezzo) {
+    public void checkBiglietti (String idB, Mezzi mezzo) {
         if (mezzo == null) System.out.println("Mezzo inserito non valido");
         else {
             if (!isObliterated(idB)) {

@@ -31,15 +31,15 @@ public class PercorrenzaDAO {
         }
     }//fine save
 
-    public Percorrenza findById(UUID id) {
-        return em.find(Percorrenza.class, id);
+    public Percorrenza findById(String id) {
+        return em.find(Percorrenza.class, UUID.fromString(id));
     }//end find
 
-    public void findByIdAndDelete(UUID id) {
+    public void findByIdAndDelete(String id) {
         try {
             EntityTransaction t = em.getTransaction();
             t.begin();
-            Percorrenza found = em.find(Percorrenza.class, id);
+            Percorrenza found = em.find(Percorrenza.class, UUID.fromString(id));
             if (found != null) {
                 em.remove(found);
                 t.commit();
@@ -63,34 +63,34 @@ public class PercorrenzaDAO {
         return query.getResultList().stream().mapToDouble(value -> value.getTempoDiPercorrenzaEffettivo()).average();
     }
 
-    public void modificaMezzo(UUID id, Mezzi newMezzo){
+    public void modificaMezzo(String id, Mezzi newMezzo){
         EntityTransaction t = em.getTransaction();
         t.begin();
         Query query = em.createQuery("UPDATE Percorrenza p SET p.mezzoPercorrenza = :newMezzo WHERE p.id = :id");
         query.setParameter("newMezzo", newMezzo);
-        query.setParameter("id", id);
+        query.setParameter("id", UUID.fromString(id));
         int numModificati = query.executeUpdate();
         t.commit();
         System.out.println("il mezzo è stato aggiornato");
     }
 
-    public void modificaTratta(UUID id, Tratta tratta){
+    public void modificaTratta(String id, Tratta tratta){
         EntityTransaction t = em.getTransaction();
         t.begin();
         Query query = em.createQuery("UPDATE Percorrenza p SET p.trattaPercorrenza = :tratta WHERE p.id = :id");
         query.setParameter("tratta", tratta);
-        query.setParameter("id", id);
+        query.setParameter("id", UUID.fromString(id));
         int numModificati = query.executeUpdate();
         t.commit();
         System.out.println("la tratta è stata aggiornata");
     }
 
-    public void modificaTempoEffettivo(UUID id, int newTemp){
+    public void modificaTempoEffettivo(String id, int newTemp){
         EntityTransaction t = em.getTransaction();
         t.begin();
         Query query = em.createQuery("UPDATE Percorrenza p SET p.tempoDiPercorrenzaEffettivo = :newTemp WHERE p.id = :id");
         query.setParameter("newTemp", newTemp);
-        query.setParameter("id", id);
+        query.setParameter("id", UUID.fromString(id));
         int numModificati = query.executeUpdate();
         t.commit();
         System.out.println("il tempo di percorrenza è stato aggiornato");

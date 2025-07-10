@@ -30,15 +30,15 @@ public class TrattaDAO {
         }
     }//fine save
 
-    public Tratta findById(UUID id) {
-        return em.find(Tratta.class, id);
+    public Tratta findById(String id) {
+        return em.find(Tratta.class, UUID.fromString(id));
     }//end find
 
-    public void findByIdAndDelete(UUID id) {
+    public void findByIdAndDelete(String id) {
         try {
             EntityTransaction t = em.getTransaction();
             t.begin();
-            Tratta found = em.find(Tratta.class, id);
+            Tratta found = em.find(Tratta.class, UUID.fromString(id));
             if (found != null) {
                 em.remove(found);
                 t.commit();
@@ -53,34 +53,34 @@ public class TrattaDAO {
         return query.getResultList().get(query.getResultList().size() -1);
     }
 
-    public void modificaParenza(UUID id, String partenza){
+    public void modificaParenza(String id, String partenza){
         EntityTransaction t = em.getTransaction();
         t.begin();
         Query query = em.createQuery("UPDATE Tratta p SET p.partenza = :partenza WHERE p.id = :id");
         query.setParameter("partenza", partenza);
-        query.setParameter("id", id);
+        query.setParameter("id", UUID.fromString(id));
         int numModificati = query.executeUpdate();
         t.commit();
         System.out.println("il punto di partenza è stato aggiornato");
     }
 
-    public void modificaCapolinea(UUID id, String capolinea){
+    public void modificaCapolinea(String id, String capolinea){
         EntityTransaction t = em.getTransaction();
         t.begin();
         Query query = em.createQuery("UPDATE Tratta p SET p.capolinea = :capolinea WHERE p.id = :id");
         query.setParameter("capolinea", capolinea);
-        query.setParameter("id", id);
+        query.setParameter("id", UUID.fromString(id));
         int numModificati = query.executeUpdate();
         t.commit();
         System.out.println("il punto di capolinea è stato aggiornato");
     }
 
-    public void modificaTempoPercorrenza(UUID id, int tempoPercorrenza){
+    public void modificaTempoPercorrenza(String id, int tempoPercorrenza){
         EntityTransaction t = em.getTransaction();
         t.begin();
         Query query = em.createQuery("UPDATE Tratta p SET p.tempoPercorrenza = :tempoPercorrenza WHERE p.id = :id");
         query.setParameter("tempoPercorrenza", tempoPercorrenza);
-        query.setParameter("id", id);
+        query.setParameter("id", UUID.fromString(id));
         int numModificati = query.executeUpdate();
         t.commit();
         System.out.println("il punto di percorrenza è stato aggiornato");

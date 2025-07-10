@@ -1,6 +1,7 @@
 package TEAM4.DAO;
 
 import TEAM4.entities.*;
+import com.sun.jdi.request.StepRequest;
 import org.hibernate.sql.Update;
 
 import javax.persistence.EntityManager;
@@ -30,15 +31,15 @@ public class MezziDAO {
         }
     }//fine save
 
-    public Mezzi findById( UUID id) {
-        return em.find(Mezzi.class, id);
+    public Mezzi findById( String id) {
+        return em.find(Mezzi.class, UUID.fromString(id));
     }//end find
 
-    public void findByIdAndDelete(UUID id) {
+    public void findByIdAndDelete(String id) {
         try {
             EntityTransaction t = em.getTransaction();
             t.begin();
-            Mezzi found = em.find(Mezzi.class, id);
+            Mezzi found = em.find(Mezzi.class, UUID.fromString(id));
             if (found != null) {
                 em.remove(found);
                 t.commit();
@@ -48,16 +49,26 @@ public class MezziDAO {
             System.out.println(e.getMessage());
         }
     }//end delete
-
-    public List<Biglietti> obTiketList(UUID id){
+    public List<Biglietti> obTiketList(){
+        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo IS NOT NULL AND b.dataTimbratura IS NOT NULL", Biglietti.class);
+        return query.getResultList();
+    }
+    public List<Biglietti> obTiketList(String id){
         TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo = :mezzo", Biglietti.class);
         query.setParameter("mezzo", findById(id));
         return query.getResultList();
     }
-    public List<Biglietti> obTiketListDate(UUID id, LocalDate data){
-        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo = :id AND b.dataEmissione = :data", Biglietti.class);
+    public List<Biglietti> obTiketListDate(LocalDate inizioPeriodo,LocalDate finePeriodo ){
+        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.dataEmissione >= :inizioPeriodo AND b.dataEmissione <= :finePeriodo", Biglietti.class);
+        query.setParameter("inizioPeriodo", inizioPeriodo.isBefore(finePeriodo)? inizioPeriodo : finePeriodo);
+        query.setParameter("finePeriodo", finePeriodo.isAfter(inizioPeriodo)? finePeriodo : inizioPeriodo);
+        return query.getResultList();
+    }
+    public List<Biglietti> obTiketListDate(String id, LocalDate inizioPeriodo,LocalDate finePeriodo){
+        TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo = :id AND b.dataEmissione >= :inizioPeriodo AND b.dataEmissione <= :finePeriodo", Biglietti.class);
         query.setParameter("id", findById(id));
-        query.setParameter("data", data);
+        query.setParameter("inizioPeriodo", inizioPeriodo.isBefore(finePeriodo)? inizioPeriodo : finePeriodo);
+        query.setParameter("finePeriodo", finePeriodo.isAfter(inizioPeriodo)? finePeriodo : inizioPeriodo);
         return query.getResultList();
     }
 
@@ -73,14 +84,14 @@ public class MezziDAO {
         }
     }
 
-    public boolean isInManutenzione(UUID id){
+    public boolean isInManutenzione(String id){
         TypedQuery<Manutenzione> query = em.createQuery("SELECT m FROM Manutenzione m WHERE m.mezzo = :mezzo AND m.dataFineM IS NULL OR m.dataFineM > :data", Manutenzione.class);
         query.setParameter("mezzo", findById(id));
         query.setParameter("data", LocalDate.now());
         return !query.getResultList().isEmpty();
     }
 
-    public void tracciaPeriodiManutenzione(UUID id){
+    public void tracciaPeriodiManutenzione(String id){
         TypedQuery<Manutenzione> query = em.createQuery("SELECT m FROM Manutenzione m WHERE m.mezzo = :mezzo AND m.dataFineM IS NOT NULL", Manutenzione.class);
         query.setParameter("mezzo", findById(id));
         if (isInManutenzione(id)){
@@ -97,23 +108,23 @@ public class MezziDAO {
         return query.getResultList().get(query.getResultList().size() -1);
     }
 
-    public void editMezzo(UUID id, int newCapienza){
+    public void editMezzo(String id, int newCapienza){
         EntityTransaction t = em.getTransaction();
         t.begin();
         Query query = em.createQuery("UPDATE Mezzi m SET m.capienza = :newCapienza WHERE m.id = :id");
         query.setParameter("newCapienza", newCapienza);
-        query.setParameter("id", id);
+        query.setParameter("id", UUID.fromString(id));
         int numModificati = query.executeUpdate();
         t.commit();
         System.out.println("La capienza del mezzo è stata aggiornata");
     }
 
-    public void editMezzo(UUID id, TipoMezzo tipoMezzo){
+    public void editMezzo(String id, TipoMezzo tipoMezzo){
         EntityTransaction t = em.getTransaction();
         t.begin();
         Query query = em.createQuery("UPDATE Mezzi m SET m.tipoMezzo = :tipoMezzo WHERE m.id = :id");
         query.setParameter("tipoMezzo", tipoMezzo);
-        query.setParameter("id", id);
+        query.setParameter("id", UUID.fromString(id));
         int numModificati = query.executeUpdate();
         t.commit();
         System.out.println("Il tipo del mezzo è stato aggiornato");

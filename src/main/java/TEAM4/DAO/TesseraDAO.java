@@ -30,15 +30,15 @@ public class TesseraDAO {
         }
     }//fine save
 
-    public Tessera findById(UUID id) {
-        return em.find(Tessera.class, id);
+    public Tessera findById(String id) {
+        return em.find(Tessera.class, UUID.fromString(id));
     }//end find
 
-    public void findByIdAndDelete(UUID id) {
+    public void findByIdAndDelete(String id) {
         try {
             EntityTransaction t = em.getTransaction();
             t.begin();
-            Tessera found = em.find(Tessera.class, id);
+            Tessera found = em.find(Tessera.class, UUID.fromString(id));
             if (found != null) {
                 em.remove(found);
                 t.commit();
@@ -49,7 +49,7 @@ public class TesseraDAO {
         }
     }//end delete
 
-    public Abbonamenti checkSub(UUID id) {
+    public Abbonamenti checkSub(String id) {
         TypedQuery<Abbonamenti> query = em.createQuery("SELECT a FROM Abbonamenti a WHERE a.tessera = :tessera AND a.dataEmissione <= :oggi AND a.dataScadenza > :oggi", Abbonamenti.class);
         query.setParameter("tessera", findById(id));
         query.setParameter("oggi", LocalDate.now());
