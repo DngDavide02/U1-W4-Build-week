@@ -31,14 +31,6 @@ public class Application {
         TrattaDAO trattaDAO = new TrattaDAO(em);
         PercorrenzaDAO percorrenzaDAO = new PercorrenzaDAO(em);
         Random rndm = new Random();
-        //---------------------------------------creazione tabella -------------------------------------------
-        //LocalTime ora = LocalTime.of(23,30);
-       // Distributori distributori1 = new Distributori(false);
-        //Rivenditori rivenditori1 = new Rivenditori(8,19);
-       // emittentiDAO.save(rivenditori1);
-       // mezziDAO.editMezzo(UUID.fromString("93b373df-4aa1-4ab0-a822-2127c003753e"),TipoMezzo.TRAM);
-        //creaTabelle(atacDAO, emittentiDAO, mezziDAO, trattaDAO, tesseraDAO, percorrenzaDAO, faker);
-       // emittentiDAO.editRivenditoreChiusura(UUID.fromString("a7ab2710-d818-4f12-9a07-ed7a32654b89"), 10);
         //---------------------------------------------Scanner------------------------------------------
         System.out.println("\n" +
                 "   ___    _____    ___     ___   \n" +
@@ -194,39 +186,6 @@ public class Application {
     }//end main
 
     //------------------------------------------------------------------------------------------------------------------
-
-    public static void creaTabelle(AtacDAO atacDAO, EmittentiDAO emittentiDAO, MezziDAO mezziDAO, TrattaDAO trattaDAO ,TesseraDAO tesseraDAO, PercorrenzaDAO percorrenzaDAO, Faker faker){
-        atacDAO.save(new Biglietti());
-        emittentiDAO.save(new Distributori(true));
-        mezziDAO.save(new Mezzi(TipoMezzo.TRAM));
-        mezziDAO.save(new Mezzi(TipoMezzo.AUTOBUS));
-        //------------------------------------------------add-----------------------------------------------
-        Biglietti biglietto1 = new Biglietti();
-        Biglietti biglietto2 = new Biglietti();
-        Tessera tessera1 = new Tessera(faker.name().firstName().toString(), faker.name().lastName().toString(), LocalDate.of(1999, 8, 9));
-        Tessera tessera2 = new Tessera(faker.name().firstName().toString(), faker.name().lastName().toString(), LocalDate.of(2002, 4, 6));
-       // Abbonamenti abbonamento1 = new Abbonamenti(tessera1, TipoAbbonamento.MENSILE);
-        //Abbonamenti abbonamento2 = new Abbonamenti(tessera1, TipoAbbonamento.SETTIMANALE,LocalDate.of(2021,3, 20));
-        Mezzi mezzo1 = new Mezzi(TipoMezzo.AUTOBUS);
-        Tratta tratta1 = new Tratta(faker.country().capital().toString(), faker.country().capital(), 30);
-        Percorrenza percorrenza1 = new Percorrenza(mezzo1, tratta1, 60);
-        Percorrenza percorrenza2 = new Percorrenza(mezzo1, tratta1, 20);
-
-
-        //-----------------------------------------------save-----------------------------------------------
-        atacDAO.save(biglietto1);
-        atacDAO.save(biglietto2);
-        tesseraDAO.save(tessera1);
-        mezziDAO.save(mezzo1);
-        tesseraDAO.save(tessera1);
-       // atacDAO.save(abbonamento2);
-        tesseraDAO.save(tessera2);
-        mezziDAO.save(mezzo1);
-        trattaDAO.save(tratta1);
-        percorrenzaDAO.save(percorrenza1);
-        percorrenzaDAO.save(percorrenza2);
-
-    }
 
     public static void scelteSwitch(String s){
         System.out.println("1-"+ s +" emittenti");
