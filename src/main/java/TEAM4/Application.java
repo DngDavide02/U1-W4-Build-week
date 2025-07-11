@@ -4,13 +4,10 @@ import TEAM4.DAO.*;
 import TEAM4.entities.*;
 import TEAM4.exception.notFoundException;
 import com.github.javafaker.Faker;
-import org.hibernate.sql.HSQLCaseFragment;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.time.DateTimeException;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -31,15 +28,6 @@ public class Application {
         TrattaDAO trattaDAO = new TrattaDAO(em);
         PercorrenzaDAO percorrenzaDAO = new PercorrenzaDAO(em);
         Random rndm = new Random();
-        //---------------------------------------creazione tabella -------------------------------------------
-        //LocalTime ora = LocalTime.of(23,30);
-       // Distributori distributori1 = new Distributori(false);
-        //Rivenditori rivenditori1 = new Rivenditori(8,19);
-       // emittentiDAO.save(rivenditori1);
-       // mezziDAO.editMezzo(UUID.fromString("93b373df-4aa1-4ab0-a822-2127c003753e"),TipoMezzo.TRAM);
-        //creaTabelle(atacDAO, emittentiDAO, mezziDAO, trattaDAO, tesseraDAO, percorrenzaDAO, faker);
-       // emittentiDAO.editRivenditoreChiusura(UUID.fromString("a7ab2710-d818-4f12-9a07-ed7a32654b89"), 10);
-        //---------------------------------------------Scanner------------------------------------------
         System.out.println("\n" +
                 "   ___    _____    ___     ___   \n" +
                 "  /   \\  |_   _|  /   \\   / __|  \n" +
@@ -86,7 +74,7 @@ public class Application {
                                                     case 2 -> creazioneMezzi(scanner, mezziDAO,true);
                                                     case 3 ->
                                                             creazionePercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);
-                                                    case 4 -> creazioneTratta(scanner, trattaDAO);
+                                                    case 4 -> creazioneTratta(scanner, trattaDAO,true);
                                                     case 5 -> creaManutenzione(mezziDAO, scanner);
                                                     default ->
                                                             System.out.println("non hai inserito il numero corretto");
@@ -195,38 +183,6 @@ public class Application {
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public static void creaTabelle(AtacDAO atacDAO, EmittentiDAO emittentiDAO, MezziDAO mezziDAO, TrattaDAO trattaDAO ,TesseraDAO tesseraDAO, PercorrenzaDAO percorrenzaDAO, Faker faker){
-        atacDAO.save(new Biglietti());
-        emittentiDAO.save(new Distributori(true));
-        mezziDAO.save(new Mezzi(TipoMezzo.TRAM));
-        mezziDAO.save(new Mezzi(TipoMezzo.AUTOBUS));
-        //------------------------------------------------add-----------------------------------------------
-        Biglietti biglietto1 = new Biglietti();
-        Biglietti biglietto2 = new Biglietti();
-        Tessera tessera1 = new Tessera(faker.name().firstName().toString(), faker.name().lastName().toString(), LocalDate.of(1999, 8, 9));
-        Tessera tessera2 = new Tessera(faker.name().firstName().toString(), faker.name().lastName().toString(), LocalDate.of(2002, 4, 6));
-       // Abbonamenti abbonamento1 = new Abbonamenti(tessera1, TipoAbbonamento.MENSILE);
-        //Abbonamenti abbonamento2 = new Abbonamenti(tessera1, TipoAbbonamento.SETTIMANALE,LocalDate.of(2021,3, 20));
-        Mezzi mezzo1 = new Mezzi(TipoMezzo.AUTOBUS);
-        Tratta tratta1 = new Tratta(faker.country().capital().toString(), faker.country().capital(), 30);
-        Percorrenza percorrenza1 = new Percorrenza(mezzo1, tratta1, 60);
-        Percorrenza percorrenza2 = new Percorrenza(mezzo1, tratta1, 20);
-
-
-        //-----------------------------------------------save-----------------------------------------------
-        atacDAO.save(biglietto1);
-        atacDAO.save(biglietto2);
-        tesseraDAO.save(tessera1);
-        mezziDAO.save(mezzo1);
-        tesseraDAO.save(tessera1);
-       // atacDAO.save(abbonamento2);
-        tesseraDAO.save(tessera2);
-        mezziDAO.save(mezzo1);
-        trattaDAO.save(tratta1);
-        percorrenzaDAO.save(percorrenza1);
-        percorrenzaDAO.save(percorrenza2);
-
-    }
 
     public static void scelteSwitch(String s){
         System.out.println("1-"+ s +" emittenti");
@@ -398,6 +354,7 @@ public class Application {
                     switch (mezzoPercorso) {
                         case 0 -> {
                             riprova = false;
+                            trattaPercorso =0;
                             System.out.println("esco...");
                         }
                         case 1 -> {
@@ -430,7 +387,7 @@ public class Application {
                             tratta = trattaDAO.findById(idTratta);
                         }
                         case 2 -> {
-                            creazioneTratta(scanner, trattaDAO);
+                            creazioneTratta(scanner, trattaDAO, false);
                             tratta = trattaDAO.lastCreate();
                         }
                         default -> System.out.println("hai sbagliato numero");
@@ -446,6 +403,7 @@ public class Application {
                             if (s.equalsIgnoreCase("n")) {
                                 trattaPercorso = 0;
                                 riprova = false;
+                                mezzoPercorso = 0;
                                 System.out.println("esco...");
                             }
                             if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
@@ -471,7 +429,7 @@ public class Application {
         }
     }//fine creazione percorrenze
 
-    public static void creazioneTratta(Scanner scanner, TrattaDAO trattaDAO){
+    public static void creazioneTratta(Scanner scanner, TrattaDAO trattaDAO, boolean repeat){
         boolean riprova = true;
         while (riprova) {
             try {
@@ -483,15 +441,20 @@ public class Application {
                 int tempoStimato = Integer.parseInt(scanner.nextLine());
                 trattaDAO.save(new Tratta(puntoPartenza, capolinea, tempoStimato));
                 String s = null;
-                while (true) {
-                    System.out.print("Vuoi creare altre tratte? (y/n): ");
-                    s = scanner.nextLine();
-                    if (s.equalsIgnoreCase("n")) {
-                        riprova = false;
-                        System.out.println("esco...");
+                if (repeat) {
+                    while (true) {
+                        System.out.print("Vuoi creare altre tratte? (y/n): ");
+                        s = scanner.nextLine();
+                        if (s.equalsIgnoreCase("n")) {
+                            riprova = false;
+                            System.out.println("esco...");
+                        }
+                        if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                        else System.out.println("non hai inserito la lettera corretta, riprova");
                     }
-                    if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
-                    else System.out.println("non hai inserito la lettera corretta, riprova");
+                }
+                if (!repeat){
+                    riprova=false;
                 }
             } catch (NumberFormatException e) {
                 System.out.println("non hai inserito un dato corretto, riprova");
