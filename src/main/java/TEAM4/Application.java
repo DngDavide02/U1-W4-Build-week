@@ -878,22 +878,35 @@ public class Application {
         }
     }
     public static void statistiche (Scanner scanner, MezziDAO mezziDAO, PercorrenzaDAO percorrenzaDAO, EmittentiDAO emittentiDAO, TrattaDAO trattaDAO ) {
+        boolean riprova = true;
+        boolean esci = false;
+        while (riprova) {
+            try {
+                int select = 0;
+                int scel = 0;
+                int scel2 = 0;
+                int stat = 0;
+                do {
         System.out.println("Quale statistica vuoi visualizzare: ");
         System.out.println("1- statistica biglietti/abbonamenti emessi");
         System.out.println("2- statistica biglietti vidimati");
         System.out.println("3- statistica manutenzione mezzi");
         System.out.println("4- statistica tratte");
         System.out.println("0- esci");
-        int select = Integer.parseInt(scanner.nextLine());
+        select = Integer.parseInt(scanner.nextLine());
         switch (select){
-            case 0 -> System.out.println("esco...");
+            case 0 -> {
+                riprova = false;
+                esci = true;
+                System.out.println("esco...");
+            }
             case 1 ->{
                 System.out.println("Seleziona una delle opzioni: ");
                 System.out.println("1- visualizza biglietti emessi in un periodo di tempo");
                 System.out.println("2- visualizza abbonamenti emessi in un periodo di tempo");
                 System.out.println("3- visualizza biglietti e abbonamenti emessi in un periodo di tempo");
                 System.out.println("0- esci");
-                int stat = Integer.parseInt(scanner.nextLine());
+                stat = Integer.parseInt(scanner.nextLine());
                 switch (stat){
                     case 0 -> System.out.println("esco...");
                     case 1-> emessiStats(scanner,emittentiDAO,1);
@@ -909,7 +922,7 @@ public class Application {
                 System.out.println("3- visualizza biglietti in totale");
                 System.out.println("4- visualizza tutti i biglietti per un mezzo");
                 System.out.println("0- esci");
-                int scel = Integer.parseInt(scanner.nextLine());
+                scel = Integer.parseInt(scanner.nextLine());
                 String idM = null;
                 LocalDate peridoInizio = null;
                 LocalDate periodoFine = null;
@@ -945,10 +958,13 @@ public class Application {
                 System.out.println("1- visualizza media percorrenza mezzo");
                 System.out.println("2- visualizza numero tratte per il mezzo");
                 System.out.println("0- uscita");
-                int scel = Integer.parseInt(scanner.nextLine());
+                scel2 = Integer.parseInt(scanner.nextLine());
+                String idM = null;
+                if (scel2>0 && scel2 <3){
                 System.out.print("Inserisci id mezzo");
-                String idM = scanner.nextLine();
-                switch (scel){
+                idM = scanner.nextLine();
+                }
+                switch (scel2){
                     case 1 -> System.out.println("La media del mezzo con id " + idM + " è: " + percorrenzaDAO.mediaPercorrenze(mezziDAO.findById(idM)).getAsDouble());
                     case 2 -> {
                         System.out.print("inserisci id della tratta: ");
@@ -962,6 +978,36 @@ public class Application {
             default -> System.out.println("hai sbagliato numero");
 
         }
+                    String s = null;
+                    if (riprova && select > 0 && select < 5 && scel2>0 && scel2 <3 && scel>0 && scel <5 && stat>0 && stat <4) {
+                        while (true) {
+                            System.out.print("Vuoi visualizzare altre statistiche? (y/n): ");
+                            s = scanner.nextLine();
+                            if (s.equalsIgnoreCase("n")) {
+                                esci = true;
+                                riprova=false;
+                                System.out.println("esco...");
+                            }
+                            if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                            else System.out.println("non hai inserito la lettera corretta, riprova");
+                        }
+                    }
+                } while (!esci);
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+                System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+            }
+        }
 
     }
 
@@ -971,8 +1017,12 @@ public class Application {
         System.out.println("2- visualizza per emittente");
         System.out.println("0- esci");
         int visE = Integer.parseInt(scanner.nextLine());
-        LocalDate inizioPeriodo = localDateCreate(scanner," inizio periodo");
-        LocalDate finePeriodo = localDateCreate(scanner," fine periodo");
+        LocalDate inizioPeriodo= null;
+        LocalDate finePeriodo = null;
+        if (visE >0 && visE<3) {
+             inizioPeriodo = localDateCreate(scanner, " inizio periodo");
+             finePeriodo = localDateCreate(scanner, " fine periodo");
+        }
         switch (visE){
             case 0 -> System.out.println("esco...");
             case 1 -> System.out.println("Sono stati emessi un totale di " +
