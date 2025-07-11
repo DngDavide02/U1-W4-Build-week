@@ -1302,6 +1302,7 @@ public class Application {
         while (riprova) {
             try {
                 int s = 0;
+                int scel = 0;
                 do {
         System.out.println("1- visualizza Titoli di viaggio");
         System.out.println("2- visualizza tratte");
@@ -1316,8 +1317,13 @@ public class Application {
             case 1 -> {
                 System.out.println("1- visualizza tessera");
                 System.out.println("2- visualizza abbonamento");
-                int scel = Integer.parseInt(scanner.nextLine());
+                System.out.println("0- uscire");
+                scel = Integer.parseInt(scanner.nextLine());
                 switch (scel){
+                    case 0 -> {
+                        System.out.println("esco...");
+                        esci = true;
+                    }
                     case 1 -> {
                         System.out.println("Inserisci id della tua tessera: ");
                         String idTessera = scanner.nextLine();
@@ -1341,7 +1347,7 @@ public class Application {
             default -> System.out.println("hai sbagliato numero");
         }
                     String st = null;
-                    if (riprova && s > 0 && s < 3) {
+                    if (riprova && s > 0 && s < 3 && scel>0 && scel<3) {
                         while (true) {
                             System.out.print("Vuoi visualizzare altro? (y/n): ");
                             st = scanner.nextLine();
