@@ -33,8 +33,6 @@ public class Application {
         Random rndm = new Random();
         //---------------------------------------creazione tabella -------------------------------------------
         //LocalTime ora = LocalTime.of(23,30);
-        System.out.println(ChronoUnit.DAYS.between(LocalDate.now(),LocalDate.of(2025,7,15)));
-
        // Distributori distributori1 = new Distributori(false);
         //Rivenditori rivenditori1 = new Rivenditori(8,19);
        // emittentiDAO.save(rivenditori1);

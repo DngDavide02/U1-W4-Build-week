@@ -63,35 +63,6 @@ public class EmittentiDAO {
         }
     }//end delete
 
-    public void emettiBiglietto(Mezzi mezzo) {
-        try {
-            EntityTransaction t = em.getTransaction();
-            t.begin();
-
-            Biglietti biglietto = new Biglietti();
-            biglietto.setDataEmissione(LocalDate.now());
-            biglietto.setDataTimbratura(LocalDate.now());
-            biglietto.setMezzo(mezzo);
-            em.persist(biglietto);
-            t.commit();
-            System.out.println("Biglietto emesso con successo");
-        } catch (Exception e) {
-            System.out.println("input sbagliato, riprova");
-        }
-    }//fine emetti biglietto
-
-    public void emettiAbbonamento(Tessera tessera, TipoAbbonamento tipo){
-        try {
-            EntityTransaction t = em.getTransaction();
-            t.begin();
-            Abbonamenti abbonamento = new Abbonamenti(tessera, tipo, LocalDate.now());
-            em.persist(abbonamento);
-            t.commit();
-            System.out.println("Abbonamento emesso con successo");
-        }catch (Exception e){
-            System.out.println("input sbagliato, riprova");
-        }
-    }
 
     public int atacEmessiInTolale (LocalDate inizioPeriodo, LocalDate finePeriodo){
         TypedQuery<Atac> query= em.createQuery("SELECT a FROM Atac a WHERE a.dataEmissione >= :inizioPeriodo AND a.dataEmissione <= :finePeriodo", Atac.class);
