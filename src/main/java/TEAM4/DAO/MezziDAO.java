@@ -51,6 +51,11 @@ public class MezziDAO {
             System.out.println("non trovato");
         }
     }//end delete
+    public int totalMezzi(){
+        TypedQuery<Mezzi> query = em.createQuery("SELECT m FROM Mezzi m ", Mezzi.class);
+        return query.getResultList().size();
+    }
+
     public List<Biglietti> obTiketList(){
         TypedQuery<Biglietti> query = em.createQuery("SELECT b FROM Biglietti b WHERE b.mezzo IS NOT NULL AND b.dataTimbratura IS NOT NULL", Biglietti.class);
         return query.getResultList();

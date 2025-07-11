@@ -71,7 +71,7 @@ public class Application {
                                                 switch (c1) {
                                                     case 0 -> System.out.println("esco...");
                                                     case 1 -> creazioneEmittenti(scanner, emittentiDAO);
-                                                    case 2 -> creazioneMezzi(scanner, mezziDAO);
+                                                    case 2 -> creazioneMezzi(scanner, mezziDAO,true);
                                                     case 3 ->
                                                             creazionePercorrenze(scanner, percorrenzaDAO, mezziDAO, trattaDAO);
                                                     case 4 -> creazioneTratta(scanner, trattaDAO);
@@ -221,18 +221,26 @@ public class Application {
     }
 
     public static void creazioneEmittenti(Scanner scanner, EmittentiDAO emittentiDAO){
+        boolean riprova = true;
+        while (riprova) {
+            try {
         System.out.println("Inserisci tipo Emittente: ");
         System.out.println("1- Rivenditore");
         System.out.println("2- Distributore");
+        System.out.println("0- esci");
         int emit = Integer.parseInt(scanner.nextLine());
         switch (emit){
+            case 0 ->{
+                riprova =false;
+                System.out.println("esco...");
+            }
             case 1 -> {
                 int n=1;
                 int oraA= -1;
                 for (int i=0; i<n ;i++) {
                     System.out.print("Inserisci ora dell'orario di apertura (da 0 a 23): ");
                     oraA = Integer.parseInt(scanner.nextLine());
-                    if (oraA>24 || oraA<0){
+                    if (oraA>23 || oraA<0){
                         System.out.println("Non hai inerito un numero tra 0 e 23, riprova");
                         n++;
                     }
@@ -253,7 +261,7 @@ public class Application {
                 for (int i=0; i<n ;i++) {
                     System.out.print("Inserisci ora dell'orario di apertura (da 0 a 23): ");
                     oraC = Integer.parseInt(scanner.nextLine());
-                    if (oraC>24 || oraC<0){
+                    if (oraC>23 || oraC<0){
                         System.out.println("Non hai inerito un numero tra 0 e 23, riprova");
                         n++;
                     }
@@ -283,95 +291,238 @@ public class Application {
             }
             default -> System.out.println("Inserisci un numero corretto");
         }
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+                System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+            }
+        }
     }//fine creazione emittenti
 
-    public static void creazioneMezzi(Scanner scanner, MezziDAO mezziDAO){
-       int mezzo = 0;
-        do {
-           System.out.println("Inserisci tipo mezzo: ");
-           System.out.println("1- AUTOBUS");
-           System.out.println("2- TRAM");
-           System.out.println("0- Uscire");
-           mezzo = Integer.parseInt(scanner.nextLine());
-           switch (mezzo) {
-               case 0 -> System.out.println("esco...");
-               case 1 -> mezziDAO.save(new Mezzi(TipoMezzo.AUTOBUS));
-               case 2 -> mezziDAO.save(new Mezzi(TipoMezzo.TRAM));
-               default -> System.out.println("Inserisci un numero corretto");
-           }
-           
-       }while (mezzo !=0);
+    public static void creazioneMezzi(Scanner scanner, MezziDAO mezziDAO, boolean repeat){
+        boolean riprova = true;
+        while (riprova) {
+            try {
+                int mezzo = 0;
+                do {
+                    System.out.println("Inserisci tipo mezzo: ");
+                    System.out.println("1- AUTOBUS");
+                    System.out.println("2- TRAM");
+                    System.out.println("0- esci");
+                    mezzo = Integer.parseInt(scanner.nextLine());
+                    switch (mezzo) {
+                        case 0 -> {
+                            riprova = false;
+                            System.out.println("esco...");
+                        }
+                        case 1 -> mezziDAO.save(new Mezzi(TipoMezzo.AUTOBUS));
+                        case 2 -> mezziDAO.save(new Mezzi(TipoMezzo.TRAM));
+                        default -> System.out.println("Inserisci un numero corretto");
+                    }
+                    String s = null;
+                    if (repeat && mezzo != 0 && mezzo < 3) {
+                        while (true) {
+                            System.out.print("Vuoi creare altri mezzi? (y/n): ");
+                            s = scanner.nextLine();
+                            if (s.equalsIgnoreCase("n")) {
+                                mezzo = 0;
+                                riprova=false;
+                                System.out.println("esco...");
+                            }
+                            if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                            else System.out.println("non hai inserito la lettera corretta, riprova");
+                        }
+                    }
+                    if (!repeat){
+                        mezzo=0;
+                        riprova=false;
+                    }
+                } while (mezzo != 0);
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+                System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+            }
+        }
     }//fine creazione mezzi
 
     public static void creazionePercorrenze(Scanner scanner, PercorrenzaDAO percorrenzaDAO, MezziDAO mezziDAO , TrattaDAO trattaDAO){
-        System.out.println("Percorrenze");
-        System.out.println("vuoi utilizzare un mezzo già esistente o crearne uno nuovo?");
-        System.out.println("1- esistente");
-        System.out.println("2- nuovo");
-        Mezzi mezzo = null;
-        int mezzoPercorso = Integer.parseInt(scanner.nextLine());
-        switch (mezzoPercorso){
-            case 1 -> {
-                System.out.print("Inserisci l'id del mezzo: ");
-                String idMezzo = scanner.nextLine();
-                mezzo = mezziDAO.findById(idMezzo);
+        boolean riprova = true;
+        while (riprova) {
+            try {
+                int mezzoPercorso = 0;
+                int trattaPercorso = 0;
+                do {
+                    System.out.println("Vuoi utilizzare un mezzo già esistente o crearne uno nuovo?");
+                    System.out.println("1- esistente");
+                    System.out.println("2- nuovo");
+                    System.out.println("0- esci");
+                    Mezzi mezzo = null;
+                    int numMezzi = mezziDAO.totalMezzi();
+                    mezzoPercorso = Integer.parseInt(scanner.nextLine());
+                    switch (mezzoPercorso) {
+                        case 0 -> {
+                            riprova = false;
+                            System.out.println("esco...");
+                        }
+                        case 1 -> {
+                            System.out.print("Inserisci l'id del mezzo: ");
+                            String idMezzo = scanner.nextLine();
+                            mezzo = mezziDAO.findById(idMezzo);
+                        }
+                        case 2 -> {
+                            creazioneMezzi(scanner, mezziDAO, false);
+                            mezzo = mezziDAO.lastCreate();
+                            if (numMezzi >= mezziDAO.totalMezzi()) mezzoPercorso=0;
+                        }
+                        default -> System.out.println("hai sbagliato numero");
+                    }
+                    if (mezzoPercorso !=0 && mezzoPercorso < 3){
+                    System.out.println("vuoi utilizzare una tratta già esistente o crearne una nuova?");
+                    System.out.println("1- esistente");
+                    System.out.println("2- nuova");
+                    System.out.println("0- esci");
+                    Tratta tratta = null;
+                    trattaPercorso = Integer.parseInt(scanner.nextLine());
+                    switch (trattaPercorso) {
+                        case 0 -> {
+                            riprova = false;
+                            System.out.println("esco...");
+                        }
+                        case 1 -> {
+                            System.out.print("Inserisci l'id della tratta: ");
+                            String idTratta = scanner.nextLine();
+                            tratta = trattaDAO.findById(idTratta);
+                        }
+                        case 2 -> {
+                            creazioneTratta(scanner, trattaDAO);
+                            tratta = trattaDAO.lastCreate();
+                        }
+                        default -> System.out.println("hai sbagliato numero");
+                    }
+                    System.out.println("Inserisci il tempo effettivo di percorrenza in minuti");
+                    int tempoPercorrenza = Integer.parseInt(scanner.nextLine());
+                    percorrenzaDAO.save(new Percorrenza(mezzo, tratta, tempoPercorrenza));
+                    String s = null;
+                    if (trattaPercorso != 0 && mezzoPercorso < 3 && trattaPercorso < 3) {
+                        while (true) {
+                            System.out.print("Vuoi creare altre percorrenze? (y/n): ");
+                            s = scanner.nextLine();
+                            if (s.equalsIgnoreCase("n")) {
+                                trattaPercorso = 0;
+                                riprova = false;
+                                System.out.println("esco...");
+                            }
+                            if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                            else System.out.println("non hai inserito la lettera corretta, riprova");
+                        }
+                    }
+                }
+                } while (mezzoPercorso != 0 || trattaPercorso !=0);
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+                System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
             }
-            case 2 -> {
-                creazioneMezzi(scanner, mezziDAO);
-                mezzo = mezziDAO.lastCreate();
-            }
-            default -> System.out.println("hai sbagliato numero");
         }
-        System.out.println("vuoi utilizzare una tratta già esistente o crearne una nuova?");
-        System.out.println("1- esistente");
-        System.out.println("2- nuova");
-        Tratta tratta = null;
-        int trattaPercorso = Integer.parseInt(scanner.nextLine());
-        switch (trattaPercorso){
-            case 1 -> {
-                System.out.print("Inserisci l'id della tratta: ");
-                String idTratta = scanner.nextLine();
-                tratta = trattaDAO.findById(idTratta);
-            }
-            case 2 -> {
-                creazioneTratta(scanner, trattaDAO);
-                tratta = trattaDAO.lastCreate();
-            }
-            default -> System.out.println("hai sbagliato numero");
-        }
-        System.out.println("Inserisci il tempo effettivo di percorrenza");
-        int tempoPercorrenza = Integer.parseInt(scanner.nextLine());
-        percorrenzaDAO.save(new Percorrenza(mezzo, tratta, tempoPercorrenza));
-
     }//fine creazione percorrenze
 
     public static void creazioneTratta(Scanner scanner, TrattaDAO trattaDAO){
-        System.out.print("Inserisci punto di partenza: ");
-        String puntoPartenza = scanner.nextLine();
-        System.out.print("Inserisci capolinea: ");
-        String capolinea = scanner.nextLine();
-        System.out.print("Inserisci il tempo stimato per la tratta: ");
-        int tempoStimato = Integer.parseInt(scanner.nextLine());
-        trattaDAO.save(new Tratta(puntoPartenza, capolinea, tempoStimato));
+        boolean riprova = true;
+        while (riprova) {
+            try {
+                System.out.print("Inserisci punto di partenza: ");
+                String puntoPartenza = scanner.nextLine();
+                System.out.print("Inserisci capolinea: ");
+                String capolinea = scanner.nextLine();
+                System.out.print("Inserisci il tempo stimato per la tratta in minuti: ");
+                int tempoStimato = Integer.parseInt(scanner.nextLine());
+                trattaDAO.save(new Tratta(puntoPartenza, capolinea, tempoStimato));
+                String s = null;
+                while (true) {
+                    System.out.print("Vuoi creare altre tratte? (y/n): ");
+                    s = scanner.nextLine();
+                    if (s.equalsIgnoreCase("n")) {
+                        riprova = false;
+                        System.out.println("esco...");
+                    }
+                    if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                    else System.out.println("non hai inserito la lettera corretta, riprova");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+                System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+            }
+        }
     }//fine creazione tratta
 
     public  static void  modificaEmittenti(Scanner scanner, EmittentiDAO emittentiDAO){
+        boolean riprova = true;
+        while (riprova) {
+            try {
+                int rT = 0;
+                int oM = 0;
+                boolean esci = false;
+                do {
         System.out.println("Quale tipo di emittente vuoi modificare: ");
-        System.out.println("0- Per annullare");
         System.out.println("1- Rivenditore");
         System.out.println("2- Distributore");
-        int rT = Integer.parseInt(scanner.nextLine());
+        System.out.println("0- esci");
+         rT = Integer.parseInt(scanner.nextLine());
         switch (rT){
-            case 0 -> System.out.println("esco...");
+            case 0 -> {
+                riprova = false;
+                System.out.println("esco...");
+            }
             case 1 -> {
                 System.out.println("Cosa vuoi modificare: ");
                 System.out.println("1- Orario Apertura");
                 System.out.println("2- Orario Chiusura");
                 System.out.println("3- Entrambi gli orari");
                 System.out.println("0- esci");
-                int oM = Integer.parseInt(scanner.nextLine());
-                System.out.println("Inserisci id: ");
-                String id = scanner.nextLine();
+                oM = Integer.parseInt(scanner.nextLine());
+                String id= null;
+                if (oM >0 && oM<4) {
+                    System.out.println("Inserisci id: ");
+                    id = scanner.nextLine();
+                }
                 int n = 1;
                 if (oM == 3) {
                     oM=1;
@@ -379,20 +530,55 @@ public class Application {
                 }
                 for (int i=0; i<n; i++){
                     switch (oM) {
-                        case 0 -> System.out.println("esco...");
+                        case 0 -> {
+                            esci = true;
+                            System.out.println("esco...");
+                        }
                         case 1 -> {
-                            System.out.print("Inserisci ora dell'orario di apertura (da 0 a 23): ");
-                            int oraA = Integer.parseInt(scanner.nextLine());
-                            System.out.print("Inserisci minuti dell'orario di apertura (da 0 a 59): ");
-                            int minutiA = Integer.parseInt(scanner.nextLine());
+                            int r=1;
+                            int oraA= -1;
+                            for (int j=0; j<r ;j++) {
+                                System.out.print("Inserisci ora dell'orario di apertura (da 0 a 23): ");
+                                oraA = Integer.parseInt(scanner.nextLine());
+                                if (oraA>23 || oraA<0){
+                                    System.out.println("Non hai inerito un numero tra 0 e 23, riprova");
+                                    r++;
+                                }
+                            }
+                            r=1;
+                            int minutiA= -1;
+                            for (int j=0; j<r ;j++) {
+                                System.out.print("Inserisci minuti dell'orario di apertura (da 0 a 59): ");
+                                minutiA = Integer.parseInt(scanner.nextLine());
+                                if (minutiA > 59 || minutiA < 0) {
+                                    System.out.println("Non hai inerito un numero tra 0 e 59, riprova");
+                                    r++;
+                                }
+                            }
                             LocalTime orarioApertura = LocalTime.of(oraA, minutiA);
                             emittentiDAO.editRivenditoreApertura(id, orarioApertura);
                         }
                         case 2 -> {
-                            System.out.print("Inserisci ora dell'orario di chiusura (da 0 a 23): ");
-                            int oraC = Integer.parseInt(scanner.nextLine());
-                            System.out.print("Inserisci minuti dell'orario di chiusura (da 0 a 59): ");
-                            int minutiC = Integer.parseInt(scanner.nextLine());
+                            int r=1;
+                            int oraC= -1;
+                            for (int j=0; j<r ;j++) {
+                                System.out.print("Inserisci ora dell'orario di apertura (da 0 a 23): ");
+                                oraC = Integer.parseInt(scanner.nextLine());
+                                if (oraC>23 || oraC<0){
+                                    System.out.println("Non hai inerito un numero tra 0 e 23, riprova");
+                                    r++;
+                                }
+                            }
+                            r=1;
+                            int minutiC= -1;
+                            for (int j=0; j<r ;j++) {
+                                System.out.print("Inserisci minuti dell'orario di apertura (da 0 a 59): ");
+                                minutiC = Integer.parseInt(scanner.nextLine());
+                                if (minutiC > 59 || minutiC < 0) {
+                                    System.out.println("Non hai inerito un numero tra 0 e 59, riprova");
+                                    r++;
+                                }
+                            }
                             LocalTime orarioChiusura = LocalTime.of(oraC, minutiC);
                             emittentiDAO.editRivenditoreChiusura(id, orarioChiusura);
                         }
@@ -413,26 +599,63 @@ public class Application {
                     else System.out.println("non hai inserito la lettera corretta, riprova");
                 }
                 if (resp.equalsIgnoreCase("y")) emittentiDAO.editOutOfService(id,!emittentiDAO.isOutOfService(id));
-                else if(resp.equalsIgnoreCase("n")) System.out.println("Grazie arrivederci");
-                else System.out.println("Esco lo stesso... ma la prossima volta PREMI N !!!!!");
+                else System.out.println("esco...");
             }
             default -> System.out.println("hai sbagliato numero");
+        }
+                    String s = null;
+                    if (rT > 0 && !esci && rT < 3 && oM> 0 && oM < 4) {
+                        while (true) {
+                            System.out.print("Vuoi modificare altri emittenti? (y/n): ");
+                            s = scanner.nextLine();
+                            if (s.equalsIgnoreCase("n")) {
+                                rT = 0;
+                                riprova=false;
+                                System.out.println("esco...");
+                            }
+                            if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                            else System.out.println("non hai inserito la lettera corretta, riprova");
+                        }
+                    }
+                } while (rT != 0);
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+                System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+            }
         }
     }
 
     public static void modificaMezzi(Scanner scanner, MezziDAO mezziDAO){
+        boolean riprova = true;
+        while (riprova) {
+            try {
+                int modM = 0;
+                do {
         System.out.println("Quale parametro del mezzo vuoi modificare: ");
         System.out.println("1- modifica tipo mezzo");
         System.out.println("2- modifica capienza");
         System.out.println("0- esci");
-        int modM = Integer.parseInt(scanner.nextLine());
+        modM = Integer.parseInt(scanner.nextLine());
         String id = null;
-        if(modM != 0 && modM < 3) {
-            System.out.print("Inserisci id del mezzo: ");
+        if(modM > 0 && modM < 3) {
+            System.out.println("Inserisci id del mezzo: ");
             id = scanner.nextLine();
         }
         switch (modM){
-            case 0 -> System.out.println("esco...");
+            case 0 -> {
+                System.out.println("esco...");
+                riprova = false;
+            }
             case 1 -> {
                 System.out.println("Il mezzo con id " + id + " è un " + mezziDAO.findById(id).getTipoMezzo() + ", vuoi cambiarlo? (y/n)");
                 String resp = scanner.nextLine();
@@ -451,18 +674,54 @@ public class Application {
             }
             default -> System.out.println("Input sbagliato");
         }
+                    String s = null;
+                    if (modM > 0 && modM < 3) {
+                        while (true) {
+                            System.out.print("Vuoi modificare altri mezzi? (y/n): ");
+                            s = scanner.nextLine();
+                            if (s.equalsIgnoreCase("n")) {
+                                modM = 0;
+                                riprova=false;
+                                System.out.println("esco...");
+                            }
+                            if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                            else System.out.println("non hai inserito la lettera corretta, riprova");
+                        }
+                    }
+                } while (modM != 0);
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+                System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+            }
+        }
     }//modifica mezzo
 
     public static void modificaPercorrenze(Scanner scanner, PercorrenzaDAO percorrenzaDAO, MezziDAO mezziDAO, TrattaDAO trattaDAO){
+        boolean riprova = true;
+        boolean esci = false;
+        while (riprova) {
+            try {
+                int modP = 0;
+                do {
         System.out.println("Quale parametro della percorrenza vuoi modificare: ");
-        System.out.println("1- modifica tipo del mezzo");
+        System.out.println("1- modifica id mezzo");
         System.out.println("2- modifica il tratto della percorrenza");
         System.out.println("3- modifica il tempo di percorrenza effettivo");
         System.out.println("4- modifica tutto");
         System.out.println("0- esci");
-        int modP = Integer.parseInt(scanner.nextLine());
+        modP = Integer.parseInt(scanner.nextLine());
         String idP = null;
-        if(modP != 0 && modP < 5 ) {
+        if(modP > 0 && modP < 5 ) {
             System.out.print("Inserisci id Percorrenza: ");
             idP = scanner.nextLine();
         }
@@ -473,38 +732,82 @@ public class Application {
         }
         for (int i=0; i<n; i++){
         switch (modP) {
-            case 0 -> System.out.println("esco...");
+            case 0 ->{
+                System.out.println("esco...");
+                riprova = false;
+                esci = true;
+            }
             case 1 -> {
-                System.out.print("Inserisci id del mezzo");
+                System.out.print("Inserisci id del mezzo: ");
                 String idM = scanner.nextLine();
                 if (!idM.isEmpty()) percorrenzaDAO.modificaMezzo(idP, mezziDAO.findById(idM));
+                else System.out.println("Parametro non modificato");
             }
             case 2 -> {
-                System.out.print("Inserisci id della tratta");
+                System.out.print("Inserisci id della tratta: ");
                 String idT = scanner.nextLine();
                 if (!idT.isEmpty()) percorrenzaDAO.modificaTratta(idP, trattaDAO.findById(idT));
+                else System.out.println("Parametro non modificato");
             }
             case 3 -> {
                 System.out.print("Inserisci tempo effettivo della percorrenza in minuti (premi 0 per uscire): ");
                 int temp = Integer.parseInt(scanner.nextLine());
                 if (temp != 0) percorrenzaDAO.modificaTempoEffettivo(idP, temp);
+                else System.out.println("Parametro non modificato");
             }
             default -> System.out.println("hai sbagliato numero");
         }
         modP++;
         }
+        String s = null;
+        if (riprova && modP > 0 && modP < 5) {
+            while (true) {
+                System.out.print("Vuoi modificare altre percorrenze? (y/n): ");
+                s = scanner.nextLine();
+                if (s.equalsIgnoreCase("n")) {
+                    modP = 0;
+                    esci = true;
+                    riprova=false;
+                    System.out.println("esco...");
+                }
+                if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                else System.out.println("non hai inserito la lettera corretta, riprova");
+            }
+        }
+    } while (!esci);
+} catch (NumberFormatException e) {
+        System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+        System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+        System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+        System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+        }
+        }
     }//fine mod percorrenza
 
     public static void modificaTratta(Scanner scanner, TrattaDAO trattaDAO){
+        boolean riprova = true;
+        boolean esci = false;
+        while (riprova) {
+            try {
+                int modT = 0;
+                do {
         System.out.println("Quale parametro della tratta vuoi modificare: ");
         System.out.println("1- modifica punto di partenza");
         System.out.println("2- modifica capolinea");
         System.out.println("3- modifica il tempo di percorrenza");
         System.out.println("4- modifica tutto");
         System.out.println("0- esci");
-        int modT = Integer.parseInt(scanner.nextLine());
+        modT = Integer.parseInt(scanner.nextLine());
         String idT = null;
-        if (modT != 0){
+        if (modT > 0 && modT < 5){
             System.out.print("Inserisci id Tratta: ");
             idT = scanner.nextLine();
         }
@@ -515,25 +818,63 @@ public class Application {
         }
         for (int i=0; i<n; i++){
             switch (modT) {
-                case 0 -> System.out.println("esco...");
+                case 0 -> {
+                    riprova = false;
+                    esci = true;
+                    System.out.println("esco...");
+                }
                 case 1 -> {
-                    System.out.print("Inserisci luogo di partenza");
+                    System.out.print("Inserisci luogo di partenza: ");
                     String partenza = scanner.nextLine();
                     if (!partenza.isEmpty()) trattaDAO.modificaParenza(idT, partenza);
+                    else System.out.println("Parametro non modificato");
                 }
                 case 2 -> {
-                    System.out.print("Inserisci capolinea");
+                    System.out.print("Inserisci capolinea: ");
                     String capolinea = scanner.nextLine();
                     if (!capolinea.isEmpty()) trattaDAO.modificaCapolinea(idT, capolinea);
+                    else System.out.println("Parametro non modificato");
                 }
                 case 3 -> {
                     System.out.print("Inserisci tempo stimato della percorrenza in minuti (premi 0 per uscire): ");
                     int temp = Integer.parseInt(scanner.nextLine());
                     if (temp != 0) trattaDAO.modificaTempoPercorrenza(idT, temp);
+                    else System.out.println("Parametro non modificato");
                 }
                 default -> System.out.println("hai sbagliato numero");
             }
             modT++;
+        }
+                    String s = null;
+                    if (riprova && modT > 0 && modT < 5) {
+                        while (true) {
+                            System.out.print("Vuoi modificare altre tratte? (y/n): ");
+                            s = scanner.nextLine();
+                            if (s.equalsIgnoreCase("n")) {
+                                modT = 0;
+                                esci = true;
+                                riprova=false;
+                                System.out.println("esco...");
+                            }
+                            if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                            else System.out.println("non hai inserito la lettera corretta, riprova");
+                        }
+                    }
+                } while (!esci);
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+                System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+            }
         }
     }
     public static void statistiche (Scanner scanner, MezziDAO mezziDAO, PercorrenzaDAO percorrenzaDAO, EmittentiDAO emittentiDAO, TrattaDAO trattaDAO ) {
@@ -657,12 +998,18 @@ public class Application {
     }
 
     public static void creaManutenzione(MezziDAO mezziDAO, Scanner scanner){
+        boolean riprova = true;
+        boolean esci = false;
+        while (riprova) {
+            try {
+                int scel = 0;
+                do {
         System.out.println("1- aggiungi manutenzione gia effettuata");
         System.out.println("2- aggiungi nuova manutenzione");
         System.out.println("0- esci");
-        int scel = Integer.parseInt(scanner.nextLine());
+        scel = Integer.parseInt(scanner.nextLine());
         String idM = null;
-        if (scel != 0 && scel < 3) {
+        if (scel > 0 && scel < 3) {
             System.out.println("inserisci un id di un veicolo");
             idM = scanner.nextLine();
         }
@@ -681,12 +1028,53 @@ public class Application {
                 String causale = scanner.nextLine();
                 mezziDAO.salvaManutenzione(new Manutenzione(mezziDAO.findById(idM), causale));
             }
-            case 0 -> System.out.println("uscita...");
+            case 0 -> {
+                riprova = false;
+                esci = true;
+                System.out.println("uscita...");
+            }
             default -> System.out.println("hai sbagliato numero");
+        }
+                    String s = null;
+                    if (riprova && scel > 0 && scel < 3) {
+                        while (true) {
+                            System.out.print("Vuoi modificare altre manutenzioni? (y/n): ");
+                            s = scanner.nextLine();
+                            if (s.equalsIgnoreCase("n")) {
+                                scel = 0;
+                                esci = true;
+                                riprova=false;
+                                System.out.println("esco...");
+                            }
+                            if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                            else System.out.println("non hai inserito la lettera corretta, riprova");
+                        }
+                    }
+                } while (!esci);
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+                System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+            }
         }
     }//fine crea man
 
     public static void modificaManutenzioni(Scanner scanner, MezziDAO mezziDAO){
+        boolean riprova = true;
+        boolean esci = false;
+        while (riprova) {
+            try {
+                int modM = 0;
+                do {
         System.out.println("Quale parametro della manutenzione vuoi modificare: ");
         System.out.println("1- modifica data di inizio");
         System.out.println("2- modifica data di fine");
@@ -694,9 +1082,9 @@ public class Application {
         System.out.println("4- modifica causale");
         System.out.println("5- modifica tutto");
         System.out.println("0- esci");
-        int modM = Integer.parseInt(scanner.nextLine());
+        modM = Integer.parseInt(scanner.nextLine());
         String idM = null;
-        if (modM != 0){
+        if (modM > 0 && modM < 6){
             System.out.print("Inserisci id Manutenzione: ");
             idM = scanner.nextLine();
         }
@@ -708,7 +1096,11 @@ public class Application {
 
         for (int i=0; i<n; i++){
             switch (modM) {
-                case 0 -> System.out.println("esco...");
+                case 0 -> {
+                    riprova = false;
+                    esci = true;
+                    System.out.println("esco...");
+                }
                 case 1 -> {
                     System.out.print("Inserisci data di inizio manutenzione: ");
                     mezziDAO.modificaDataInizioManutenzioni(idM ,localDateCreate(scanner, ""));
@@ -731,17 +1123,60 @@ public class Application {
             }
             modM++;
         }
+        String s = null;
+        if (riprova && modM > 0 && modM < 6) {
+            while (true) {
+                System.out.print("Vuoi modificare altre manutenzioni? (y/n): ");
+                s = scanner.nextLine();
+                if (s.equalsIgnoreCase("n")) {
+                    modM = 0;
+                    esci = true;
+                    riprova=false;
+                    System.out.println("esco...");
+                }
+                if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                else System.out.println("non hai inserito la lettera corretta, riprova");
+            }
+        }
+    } while (!esci);
+} catch (NumberFormatException e) {
+        System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+        System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+        System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+        System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+        }
+        }
     }
 
     public static void acquista(Scanner scanner, AtacDAO atacDAO, TesseraDAO tesseraDAO){
+        boolean riprova = true;
+        boolean esci = false;
+        while (riprova) {
+            try {
+                int scel = 0;
+                do {
         System.out.println("1- acquista biglietto");
         System.out.println("2- acquista abbonamento");
-        System.out.println("3- crea tessera");
+        System.out.println("3- acquista tessera");
+        System.out.println("0- uscita");
         Tessera myTessera = null;
-        int scel = Integer.parseInt(scanner.nextLine());
+        scel = Integer.parseInt(scanner.nextLine());
         int count=1;
         for (int i=0; i<count; i++) {
             switch (scel) {
+                case 0-> {
+                    riprova = false;
+                    esci = true;
+                    System.out.println("esco...");
+                }
                 case 1 -> atacDAO.save(new Biglietti());
                 case 2 -> {
                     if (myTessera==null || count == 1) {
@@ -757,7 +1192,9 @@ public class Application {
                             String tessera = scanner.nextLine();
                             if (!tesseraDAO.checkSub(tessera)){
                                 System.out.println("Abbonamento già presente");
-                            } else {
+                            } else if (tesseraDAO.isExpire(tessera)) {
+                                System.out.println("Tessera scaduta");
+                            }else {
                                 System.out.println("Inserisci tipo abbonamento");
                                 System.out.println("1- mensile");
                                 System.out.println("2- settimanale");
@@ -826,13 +1263,56 @@ public class Application {
                 default -> System.out.println("hai sbagliato numero");
             }
         }
+                    String s = null;
+                    if (riprova && scel > 0 && scel < 4) {
+                        while (true) {
+                            System.out.print("Vuoi continuare ad acquistare? (y/n): ");
+                            s = scanner.nextLine();
+                            if (s.equalsIgnoreCase("n")) {
+                                scel = 0;
+                                esci = true;
+                                riprova=false;
+                                System.out.println("esco...");
+                            }
+                            if (s.equalsIgnoreCase("y") || s.equalsIgnoreCase("n")) break;
+                            else System.out.println("non hai inserito la lettera corretta, riprova");
+                        }
+                    }
+                } while (!esci);
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+                System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+            }
+        }
     }
 
     public static void visualizza(Scanner scanner, TesseraDAO tesseraDAO, AtacDAO atacDAO, TrattaDAO trattaDAO){
+        boolean riprova = true;
+        boolean esci = false;
+        while (riprova) {
+            try {
+                int s = 0;
+                do {
         System.out.println("1- visualizza Titoli di viaggio");
         System.out.println("2- visualizza tratte");
-        int s = Integer.parseInt(scanner.nextLine());
+        System.out.println("0- uscire");
+        s = Integer.parseInt(scanner.nextLine());
         switch (s){
+            case 0 -> {
+                riprova = false;
+                esci = true;
+                System.out.println("esco...");
+            }
             case 1 -> {
                 System.out.println("1- visualizza tessera");
                 System.out.println("2- visualizza abbonamento");
@@ -860,6 +1340,37 @@ public class Application {
             }
             default -> System.out.println("hai sbagliato numero");
         }
+                    String st = null;
+                    if (riprova && s > 0 && s < 3) {
+                        while (true) {
+                            System.out.print("Vuoi visualizzare altro? (y/n): ");
+                            st = scanner.nextLine();
+                            if (st.equalsIgnoreCase("n")) {
+                                s = 0;
+                                esci = true;
+                                riprova=false;
+                                System.out.println("esco...");
+                            }
+                            if (st.equalsIgnoreCase("y") || st.equalsIgnoreCase("n")) break;
+                            else System.out.println("non hai inserito la lettera corretta, riprova");
+                        }
+                    }
+                } while (!esci);
+            } catch (NumberFormatException e) {
+                System.out.println("non hai inserito un dato corretto, riprova");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
+                System.out.println("hai sbagliato input, riprova");
+                System.out.println();
+            } catch (DateTimeException | IllegalStateException e) {
+                System.out.println("hai inserito un dato sbagliato, riprova");
+                System.out.println();
+            } catch (NullPointerException e) {
+                System.out.println("id non valido");
+                System.out.println();
+            } catch (notFoundException e) {
+            }
+        }
     }
 
     public static LocalDate localDateCreate(Scanner scanner, String str) {
@@ -871,4 +1382,5 @@ public class Application {
         int g = Integer.parseInt(scanner.nextLine());
         return LocalDate.of(a,m,g);
     }
+
     }
