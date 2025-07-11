@@ -10,7 +10,7 @@ public abstract class Emittenti {
     @Id
     @GeneratedValue
     protected UUID id;
-    @OneToMany(mappedBy = "emittenti")
+    @OneToMany(mappedBy = "emittenti", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<Atac> listaBiglietti;
 
     public Emittenti(List<Atac> listaBiglietti) {
