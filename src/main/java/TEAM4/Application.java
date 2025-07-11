@@ -183,7 +183,6 @@ public class Application {
 
     //------------------------------------------------------------------------------------------------------------------
 
-
     public static void scelteSwitch(String s){
         System.out.println("1-"+ s +" emittenti");
         System.out.println("2-"+ s +" mezzi");
