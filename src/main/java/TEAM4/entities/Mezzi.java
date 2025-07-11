@@ -10,7 +10,7 @@ public class Mezzi {
     @Id
     @GeneratedValue
     private UUID id;
-    @OneToMany(mappedBy = "mezzoPercorrenza")
+    @OneToMany(mappedBy = "mezzoPercorrenza", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Percorrenza> percorrenzaMezzi;
     @OneToMany(mappedBy = "mezzo")
     private  List<Biglietti> biglietti;
