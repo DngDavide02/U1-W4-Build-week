@@ -10,8 +10,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -31,6 +33,8 @@ public class Application {
         Random rndm = new Random();
         //---------------------------------------creazione tabella -------------------------------------------
         //LocalTime ora = LocalTime.of(23,30);
+        System.out.println(ChronoUnit.DAYS.between(LocalDate.now(),LocalDate.of(2025,7,15)));
+
        // Distributori distributori1 = new Distributori(false);
         //Rivenditori rivenditori1 = new Rivenditori(8,19);
        // emittentiDAO.save(rivenditori1);
@@ -139,7 +143,7 @@ public class Application {
                                 System.out.println("0- Uscita");
                                 scelta = Integer.parseInt(scanner.nextLine());
                                 switch (scelta) {
-                                    case 1 -> acquista(scanner, atacDAO, tesseraDAO);
+                                    case 1 -> acquista(scanner, atacDAO, tesseraDAO, emittentiDAO);
                                     case 2 -> visualizza(scanner, tesseraDAO, atacDAO, trattaDAO);
                                     case 3 -> {
                                         System.out.print("inserisci id del biglietto: ");
@@ -188,8 +192,8 @@ public class Application {
         Biglietti biglietto2 = new Biglietti();
         Tessera tessera1 = new Tessera(faker.name().firstName().toString(), faker.name().lastName().toString(), LocalDate.of(1999, 8, 9));
         Tessera tessera2 = new Tessera(faker.name().firstName().toString(), faker.name().lastName().toString(), LocalDate.of(2002, 4, 6));
-        Abbonamenti abbonamento1 = new Abbonamenti(tessera1, TipoAbbonamento.MENSILE);
-        Abbonamenti abbonamento2 = new Abbonamenti(tessera1, TipoAbbonamento.SETTIMANALE,LocalDate.of(2021,3, 20));
+       // Abbonamenti abbonamento1 = new Abbonamenti(tessera1, TipoAbbonamento.MENSILE);
+        //Abbonamenti abbonamento2 = new Abbonamenti(tessera1, TipoAbbonamento.SETTIMANALE,LocalDate.of(2021,3, 20));
         Mezzi mezzo1 = new Mezzi(TipoMezzo.AUTOBUS);
         Tratta tratta1 = new Tratta(faker.country().capital().toString(), faker.country().capital(), 30);
         Percorrenza percorrenza1 = new Percorrenza(mezzo1, tratta1, 60);
@@ -202,7 +206,7 @@ public class Application {
         tesseraDAO.save(tessera1);
         mezziDAO.save(mezzo1);
         tesseraDAO.save(tessera1);
-        atacDAO.save(abbonamento2);
+       // atacDAO.save(abbonamento2);
         tesseraDAO.save(tessera2);
         mezziDAO.save(mezzo1);
         trattaDAO.save(tratta1);
@@ -1206,7 +1210,7 @@ public class Application {
         }
     }
 
-    public static void acquista(Scanner scanner, AtacDAO atacDAO, TesseraDAO tesseraDAO){
+    public static void acquista(Scanner scanner, AtacDAO atacDAO, TesseraDAO tesseraDAO, EmittentiDAO emittentiDAO){
         boolean riprova = true;
         boolean esci = false;
         while (riprova) {
@@ -1219,7 +1223,12 @@ public class Application {
         System.out.println("0- uscita");
         Tessera myTessera = null;
         scel = Integer.parseInt(scanner.nextLine());
+        String idE = null;
         int count=1;
+        if (scel>0 && scel<4){
+            System.out.println("Inserisci id dell'emittente da dove stai effettuando la transizione: ");
+            idE = scanner.nextLine();
+        }
         for (int i=0; i<count; i++) {
             switch (scel) {
                 case 0-> {
@@ -1227,7 +1236,7 @@ public class Application {
                     esci = true;
                     System.out.println("esco...");
                 }
-                case 1 -> atacDAO.save(new Biglietti());
+                case 1 -> atacDAO.save(new Biglietti(emittentiDAO.findById(idE)));
                 case 2 -> {
                     if (myTessera==null || count == 1) {
                         String risp = null;
@@ -1242,9 +1251,26 @@ public class Application {
                             String tessera = scanner.nextLine();
                             if (!tesseraDAO.checkSub(tessera)){
                                 System.out.println("Abbonamento già presente");
-                            } else if (tesseraDAO.isExpire(tessera)) {
-                                System.out.println("Tessera scaduta");
-                            }else {
+                            } else if (tesseraDAO.isExpire(tessera) || ChronoUnit.DAYS.between(LocalDate.now(),tesseraDAO.findById(tessera).getDataScadenza()) <31) {
+                                if(tesseraDAO.isExpire(tessera)) System.out.println("Tessera scaduta");
+                                else {
+                                    System.out.println("Non è possibile rinnovare l'abbonamento perchè la tessera scadra tra "+  ChronoUnit.DAYS.between(LocalDate.now(),tesseraDAO.findById(tessera).getDataScadenza()) +" giorni");
+                                    String s = null;
+                                    while (true) {
+                                        System.out.print("Vuoi rinnovare la tessera? (y/n): ");
+                                        s = scanner.nextLine();
+                                        if (s.equalsIgnoreCase("n")) {
+                                            System.out.println("esco...");
+                                            break;
+                                        }
+                                        if (s.equalsIgnoreCase("y")){
+                                            tesseraDAO.rinnovaTessera(tesseraDAO.findById(tessera));
+                                            break;
+                                        }
+                                        else System.out.println("non hai inserito la lettera corretta, riprova");
+                                    }
+                                }
+                            } else {
                                 System.out.println("Inserisci tipo abbonamento");
                                 System.out.println("1- mensile");
                                 System.out.println("2- settimanale");
@@ -1258,7 +1284,7 @@ public class Application {
                                     default -> System.out.println("hai sbagliato tipo");
                                 }
                                 if (s != 0)
-                                    atacDAO.save(new Abbonamenti(tesseraDAO.findById(tessera), tipoAbbonamento));
+                                    atacDAO.save(new Abbonamenti(tesseraDAO.findById(tessera), tipoAbbonamento, emittentiDAO.findById(idE) ));
                             }
                             } else {
                             String s = null;
@@ -1285,7 +1311,7 @@ public class Application {
                             case 2 -> tipoAbbonamento = TipoAbbonamento.SETTIMANALE;
                             default -> System.out.println("hai sbagliato tipo");
                         }
-                        if(s != 0) atacDAO.save(new Abbonamenti(myTessera, tipoAbbonamento));
+                        if(s != 0) atacDAO.save(new Abbonamenti(myTessera, tipoAbbonamento,emittentiDAO.findById(idE)));
                     }
                 }
                 case 3 -> {

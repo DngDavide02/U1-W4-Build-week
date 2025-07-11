@@ -12,12 +12,17 @@ public class Biglietti extends Atac{
     @JoinColumn(name="mezzo_id")
     private Mezzi mezzo;
 
-    public Biglietti(LocalDate dataTimbratura, Mezzi mezzo) {
+    public Biglietti(LocalDate dataTimbratura, Mezzi mezzo, Emittenti emittente) {
+        super(emittente);
         this.dataTimbratura = dataTimbratura;
         this.mezzo = mezzo;
     }
+    public Biglietti( Emittenti emittente) {
+        super(emittente);
+    }
 
     public Biglietti() {}
+
 
     public LocalDate getDataTimbratura() {
         return dataTimbratura;

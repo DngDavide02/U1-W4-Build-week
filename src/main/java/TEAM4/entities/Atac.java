@@ -16,11 +16,15 @@ public abstract class Atac {
 
     protected LocalDate dataEmissione;
 
-    public Atac() {
-        this.dataEmissione = LocalDate.now();
+    public Atac(){
     }
-    public Atac(LocalDate dataEmissione) {
+    public Atac(Emittenti emittenti) {
+        this.dataEmissione = LocalDate.now();
+        this.emittenti = emittenti;
+    }
+    public Atac(LocalDate dataEmissione,Emittenti emittenti) {
         this.dataEmissione = dataEmissione;
+        this.emittenti = emittenti;
     }
 
     public UUID getId() {

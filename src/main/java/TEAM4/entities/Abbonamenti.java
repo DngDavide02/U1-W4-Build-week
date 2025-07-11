@@ -20,21 +20,12 @@ public class Abbonamenti extends Atac {
     public  Abbonamenti(){
     }
 
-    public Abbonamenti(Tessera tessera, TipoAbbonamento tipo) {
+    public Abbonamenti(Tessera tessera, TipoAbbonamento tipo,Emittenti emittente) {
+        super(emittente);
         if (tipo == TipoAbbonamento.MENSILE){
             this.dataScadenza = super.dataEmissione.plusMonths(1);
         } else {
             this.dataScadenza = super.dataEmissione.plusDays(7);
-        }
-        this.tessera = tessera;
-        this.tipo = tipo;
-    }
-    public Abbonamenti(Tessera tessera, TipoAbbonamento tipo, LocalDate dataEmissione) {
-       super(dataEmissione);
-        if (tipo == TipoAbbonamento.MENSILE){
-            this.dataScadenza = dataEmissione.plusMonths(1);
-        } else {
-            this.dataScadenza = dataEmissione.plusDays(7);
         }
         this.tessera = tessera;
         this.tipo = tipo;
