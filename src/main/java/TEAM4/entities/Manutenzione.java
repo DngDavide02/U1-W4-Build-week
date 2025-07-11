@@ -61,6 +61,10 @@ public class Manutenzione {
         this.mezzo = mezzo;
     }
 
+    public String getCausale() {
+        return causale;
+    }
+
     @Override
     public String toString() {
         return "Manutenzione{" +

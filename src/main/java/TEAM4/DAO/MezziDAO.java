@@ -104,12 +104,15 @@ public class MezziDAO {
         query.setParameter("dataInizioM", dataInizioM);
         query.setParameter("dataFineM", dataFineM);
         if (isInManutenzione(id)){
-            System.out.println("il mezzo con id " + id + "è in manutenzione");
+            System.out.println("Il mezzo con id " + id + "è attualmente in manutenzione");
         }else {
-            System.out.println("il mezzo non è in manutenzione");
+            System.out.println("Il mezzo non è attualmente in manutenzione");
         }
-        System.out.println("storico manutenzioni: ");
-        query.getResultList().forEach(manutenzione -> System.out.println("Data inizio manutenzione: " + manutenzione.getDataInizioM() + " Data fine manutenzione " + manutenzione.getDataFineM()));
+        if (query.getResultList().isEmpty()) System.out.println("Il mezzo non ha effettuato manutenzioni dal " + dataInizioM + " al " + dataFineM );
+        else {
+            System.out.println("Storico manutenzioni dal " + dataInizioM + " al " + dataFineM + ": ");
+            query.getResultList().forEach(manutenzione -> System.out.println("Data inizio manutenzione: " + manutenzione.getDataInizioM() + " Data fine manutenzione: " + manutenzione.getDataFineM() + " Causa: " + manutenzione.getCausale()));
+        }
     }
 
     public Mezzi lastCreate(){

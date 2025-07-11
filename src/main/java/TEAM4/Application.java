@@ -64,8 +64,7 @@ public class Application {
                                 String pw = scanner.nextLine();
                                 if (pw.equals("secret")){
                                     secret();
-                                }
-                                else if (pw.equals(password)) {
+                                } else if (pw.equals(password)) {
                                     int r = 0;
                                     do {
                                         System.out.println();
@@ -136,6 +135,10 @@ public class Application {
                                     break;
                                 } else {
                                     System.out.println("password non corretta");
+                                    if(i ==2) {
+                                        System.out.println("HAI SVAGLIATO TROPPE VOLTE");
+                                        System.out.println("esco....");
+                                    }
                                 }
                             }
                         }
@@ -962,7 +965,7 @@ public class Application {
             case 3 -> {
                 System.out.print("inserisci id del mezzo: ");
                 String idM = scanner.nextLine();
-                System.out.print("inserisci data inizio controllo: ");
+                System.out.println("inserisci data inizio controllo: ");
                 LocalDate dataInizio = localDateCreate(scanner, "");
                 System.out.println("inserisci data fine controllo: ");
                 LocalDate dataFine = localDateCreate(scanner, "");
@@ -975,15 +978,15 @@ public class Application {
                 scel2 = Integer.parseInt(scanner.nextLine());
                 String idM = null;
                 if (scel2>0 && scel2 <3){
-                System.out.print("Inserisci id mezzo");
+                System.out.print("Inserisci id mezzo: ");
                 idM = scanner.nextLine();
                 }
                 switch (scel2){
                     case 1 -> System.out.println("La media del mezzo con id " + idM + " è: " + percorrenzaDAO.mediaPercorrenze(mezziDAO.findById(idM)).getAsDouble());
                     case 2 -> {
-                        System.out.print("inserisci id della tratta: ");
+                        System.out.print("Inserisci id della tratta: ");
                         String idT = scanner.nextLine();
-                        System.out.println("il numero di tratte per il mezzo selezionato è di: " +  percorrenzaDAO.getPercorrenzaMezzo(mezziDAO.findById(idM), trattaDAO.findById(idT)));
+                        System.out.println("Il numero di tratte per il mezzo selezionato è di: " +  percorrenzaDAO.getPercorrenzaMezzo(mezziDAO.findById(idM), trattaDAO.findById(idT)));
                     }
                     case 0 -> System.out.println("Uscita...");
                     default -> System.out.println("hai sbagliato numero");
@@ -1411,7 +1414,34 @@ public class Application {
                     case 1 -> {
                         System.out.println("Inserisci id della tua tessera: ");
                         String idTessera = scanner.nextLine();
-                        System.out.println(tesseraDAO.findById(idTessera));
+                        System.out.println("Id: " + tesseraDAO.findById(idTessera).getId());
+                        System.out.println("Nome: " + tesseraDAO.findById(idTessera).getNome());
+                        System.out.println("Cognome: " + tesseraDAO.findById(idTessera).getCognome());
+                        System.out.println("Data di Nascita: " + tesseraDAO.findById(idTessera).getDataDiNascita());
+                        if (tesseraDAO.checkSub(idTessera)) {
+                            System.out.println("Non ci sono abbonamenti validi");
+                        } else {
+                            Abbonamenti valid = tesseraDAO.getSub(idTessera);
+                            System.out.println("L'abbonamento " + valid.getTipo() + " scadra il " + valid.getDataScadenza());
+                        }
+                        if(tesseraDAO.isExpire(idTessera)) System.out.println("Tessera scaduta! ");
+                        else System.out.println("La tessera scadrà tra "+  ChronoUnit.DAYS.between(LocalDate.now(),tesseraDAO.findById(idTessera).getDataScadenza()) +" giorni");
+                       if(tesseraDAO.isExpire(idTessera) || ChronoUnit.DAYS.between(LocalDate.now(),tesseraDAO.findById(idTessera).getDataScadenza())<31){
+                           String rin =null;
+                           while (true) {
+                               System.out.print("Vuoi rinnovare la tessera? (y/n): ");
+                               rin = scanner.nextLine();
+                               if (rin.equalsIgnoreCase("n")) {
+                                   System.out.println("esco...");
+                                   break;
+                               }
+                               if (rin.equalsIgnoreCase("y")){
+                                   tesseraDAO.rinnovaTessera(tesseraDAO.findById(idTessera));
+                                   break;
+                               }
+                               else System.out.println("non hai inserito la lettera corretta, riprova");
+                           }
+                       }
                     }
                     case 2 -> {
                         System.out.println("Inserisci id dell'abbonamento");
